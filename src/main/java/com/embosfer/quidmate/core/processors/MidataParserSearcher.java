@@ -18,9 +18,9 @@ import org.slf4j.LoggerFactory;
  * @author embosfer
  *
  */
-public class MidataProcessor {
+public class MidataParserSearcher {
 
-	private static final Logger log = LoggerFactory.getLogger(MidataProcessor.class);
+	private static final Logger log = LoggerFactory.getLogger(MidataParserSearcher.class);
 
 	private static final String TWO_DIGITS = "%02d";
 
@@ -35,7 +35,7 @@ public class MidataProcessor {
 
 	private List<String> allLines; // Lines of the file, represented as Strings
 
-	public MidataProcessor(String fileUri) {
+	public MidataParserSearcher(String fileUri) {
 		try {
 			allLines = Files.readAllLines(Paths.get(fileUri), StandardCharsets.ISO_8859_1);
 		} catch (IOException ex) {
@@ -103,8 +103,8 @@ public class MidataProcessor {
 		return csvArray -> Double.parseDouble(csvArray[3].replace(POUND_SYMBOL, ""));
 	}
 
-	public static void printResultFrom(List<String[]> expenses) {
-		final double totalExpenses = expenses.stream().mapToDouble(debitCreditToDouble()).sum();
+	public static void print(List<String[]> expenses) {
+		final double totalExpenses = expenses.stream().mapToDouble(debitCreditToDouble()).sum(); // TODO: separate negative and positive
 		expenses.stream().forEach(array -> System.out.println(Arrays.toString(array)));
 		System.out.println("TOTAL EXPENSES(£): " + totalExpenses);
 		System.out.println("-----\n");
@@ -115,18 +115,18 @@ public class MidataProcessor {
 		final String fileUri = "/Users/embosfer/Downloads/Statements_Midata.csv";
 
 		// 2. pass it to the constructor of the Midata processor
-		final MidataProcessor midata = new MidataProcessor(fileUri);
+		final MidataParserSearcher midata = new MidataParserSearcher(fileUri);
 
 		// 3. pass the key words you want the processor to capture as an array (null if you want everything) 
 		// and also the period (null if you want everything)
 		final String[] billsKeyWords = { "Amazon", "TV LICENCE", "THAMES", "TFL", "EDF", "EON", "SKY" };
-		
+
 		// Example 1: money paid for bills in 2016
 		List<String[]> transactions = midata.transactions(null, null, 2016, billsKeyWords);
-		printResultFrom(transactions);
+		print(transactions);
 		
 		// Example 2: money paid in total in 2016
 		transactions = midata.transactions(null, null, 2016, null);
-		printResultFrom(transactions);
+		print(transactions);
 	}
 }

@@ -3,17 +3,12 @@ package com.embosfer.quidmate.core.parser;
 import com.embosfer.quidmate.core.exceptions.UnknownFileFormatException;
 import com.embosfer.quidmate.core.model.*;
 import com.embosfer.quidmate.support.MidataSupport.MidataFile;
-import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import java.io.File;
-import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.embosfer.quidmate.core.model.TransactionType.*;
 import static com.embosfer.quidmate.support.MidataSupport.file;

@@ -12,7 +12,7 @@ public class DoubleValueType extends ValueType {
     }
 
     public static double fromCSV(String csvValue) {
-        return Double.valueOf(csvValue.replace("£", ""));
+        return Double.parseDouble(csvValue.replace("£", ""));
     }
 
     @Override

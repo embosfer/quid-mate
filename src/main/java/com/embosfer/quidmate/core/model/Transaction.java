@@ -27,6 +27,6 @@ public class Transaction {
 
     @Override
     public String toString() {
-        return "[" + date + ", " + type + ", " + description + ", " + debitCredit + ", " + balance + "]";
+        return "[" + date + ", " + type + ", Description: " + description + ", Debit/Credit: " + debitCredit + ", Balance: " + balance + "]";
     }
 }

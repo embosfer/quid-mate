@@ -13,8 +13,4 @@ public class DebitCredit extends DoubleValueType {
         return new DebitCredit(value);
     }
 
-    @Override
-    public String toString() {
-        return "Debit/Credit: " + super.toString();
-    }
 }

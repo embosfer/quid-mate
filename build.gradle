@@ -6,16 +6,27 @@
  * For more details take a look at the Java Quickstart chapter in the Gradle
  * user guide available at https://docs.gradle.org/2.9/userguide/tutorial_java_projects.html
  */
+plugins {
+    id 'nu.studer.jooq' version '2.0.6'
+}
 
-// Apply the java plugin to add support for Java
 apply plugin: 'java'
+apply from: 'jooq.gradle'
 
 repositories {
+    mavenCentral()
     jcenter()
 }
 
 dependencies {
     compile 'org.slf4j:slf4j-api:1.7.13'
+    compile 'org.jooq:jooq:3.9.2'
+    compile 'org.jooq:jooq-meta:3.9.2'
+    compile 'org.jooq:jooq-codegen:3.9.2'
+    compile 'org.apache.commons:commons-csv:1.4'
+
+    jooqRuntime 'mysql:mysql-connector-java:6.0.6'
+    runtime 'mysql:mysql-connector-java:6.0.6'
 
     testCompile 'junit:junit:4.+'
     testCompile "org.testfx:testfx-core:4.0.+"

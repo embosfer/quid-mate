@@ -1,0 +1,30 @@
+jooq {
+    version = '3.9.2'
+    edition = 'OSS'
+    quidMate(sourceSets.main) {
+        jdbc {
+            driver = 'com.mysql.cj.jdbc.Driver'
+            url = 'jdbc:mysql://localhost:3306/QuidMate'
+            user = 'root'
+            password = 'XXXXXX'
+        }
+        generator {
+            name = 'org.jooq.util.JavaGenerator'
+            database {
+                name = 'org.jooq.util.mysql.MySQLDatabase'
+            }
+            generate {
+                relations = true
+                deprecated = false
+                records = true
+                immutablePojos = true
+                fluentSetters = true
+                javaTimeTypes = true
+            }
+            target {
+                packageName = 'com.embosfer.quidmate.db'
+                directory = 'src/main/java'
+            }
+        }
+    }
+}

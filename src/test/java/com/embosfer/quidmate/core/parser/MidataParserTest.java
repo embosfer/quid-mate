@@ -63,6 +63,7 @@ public class MidataParserTest {
                 Transaction.of(now, CHEQUE_PAID_IN, someDescription, someValue, otherValue),
                 Transaction.of(now, CLEARED_CHEQUE, someDescription, someValue, otherValue),
                 Transaction.of(now, CREDIT_IN, someDescription, someValue, otherValue),
+                Transaction.of(now, DEPOSIT, someDescription, someValue, otherValue),
                 Transaction.of(now, DD, someDescription, someValue, otherValue),
                 Transaction.of(now, FAST_PAYMENT, someDescription, someValue, otherValue),
                 Transaction.of(now, FEES, someDescription, someValue, otherValue),

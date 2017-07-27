@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import java.io.File;
+import java.time.LocalDate;
 import java.util.List;
 
 import static com.embosfer.quidmate.core.model.TransactionType.*;
@@ -49,22 +50,26 @@ public class MidataParserTest {
 
     @Test
     public void supportsAllTypesOfTransactions() throws UnknownFileFormatException {
+        LocalDate now = now();
+        Description someDescription = Description.of("A");
+        DebitCredit someValue = DebitCredit.of(1);
+        Balance otherValue = Balance.of(1);
         Transaction[] transactions = {
-                Transaction.of(now(), CARD_PAYMENT, Description.of("A"), DebitCredit.of(1), Balance.of(1)),
-                Transaction.of(now(), CASH_AVAILABILITY_PCAS, Description.of("A"), DebitCredit.of(1), Balance.of(1)),
-                Transaction.of(now(), CASH_WDL, Description.of("A"), DebitCredit.of(1), Balance.of(1)),
-                Transaction.of(now(), CASH_WDL_REV, Description.of("A"), DebitCredit.of(1), Balance.of(1)),
-                Transaction.of(now(), CASHBACK, Description.of("A"), DebitCredit.of(1), Balance.of(1)),
-                Transaction.of(now(), CHEQUE_PAID_IN, Description.of("A"), DebitCredit.of(1), Balance.of(1)),
-                Transaction.of(now(), CLEARED_CHEQUE, Description.of("A"), DebitCredit.of(1), Balance.of(1)),
-                Transaction.of(now(), CREDIT_IN, Description.of("A"), DebitCredit.of(1), Balance.of(1)),
-                Transaction.of(now(), DD, Description.of("A"), DebitCredit.of(1), Balance.of(1)),
-                Transaction.of(now(), FAST_PAYMENT, Description.of("A"), DebitCredit.of(1), Balance.of(1)),
-                Transaction.of(now(), FEES, Description.of("A"), DebitCredit.of(1), Balance.of(1)),
-                Transaction.of(now(), INTEREST, Description.of("A"), DebitCredit.of(1), Balance.of(1)),
-                Transaction.of(now(), MONTHLY_ACCOUNT_FEE, Description.of("A"), DebitCredit.of(1), Balance.of(1)),
-                Transaction.of(now(), NONSTERLING_PURCHASE_FEE, Description.of("A"), DebitCredit.of(1), Balance.of(1)),
-                Transaction.of(now(), PAYMENTS, Description.of("A"), DebitCredit.of(1), Balance.of(1))
+                Transaction.of(now, CARD_PAYMENT, someDescription, someValue, otherValue),
+                Transaction.of(now, CASH_AVAILABILITY_PCAS, someDescription, someValue, otherValue),
+                Transaction.of(now, CASH_WDL, someDescription, someValue, otherValue),
+                Transaction.of(now, CASH_WDL_REV, someDescription, someValue, otherValue),
+                Transaction.of(now, CASHBACK, someDescription, someValue, otherValue),
+                Transaction.of(now, CHEQUE_PAID_IN, someDescription, someValue, otherValue),
+                Transaction.of(now, CLEARED_CHEQUE, someDescription, someValue, otherValue),
+                Transaction.of(now, CREDIT_IN, someDescription, someValue, otherValue),
+                Transaction.of(now, DD, someDescription, someValue, otherValue),
+                Transaction.of(now, FAST_PAYMENT, someDescription, someValue, otherValue),
+                Transaction.of(now, FEES, someDescription, someValue, otherValue),
+                Transaction.of(now, INTEREST, someDescription, someValue, otherValue),
+                Transaction.of(now, MONTHLY_ACCOUNT_FEE, someDescription, someValue, otherValue),
+                Transaction.of(now, NONSTERLING_PURCHASE_FEE, someDescription, someValue, otherValue),
+                Transaction.of(now, PAYMENTS, someDescription, someValue, otherValue)
         };
 
         MidataFile midataFile = file(midataFilename)

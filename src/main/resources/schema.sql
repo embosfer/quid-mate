@@ -43,6 +43,7 @@ INSERT INTO TransactionType (type) VALUES ('CASHBACK');
 INSERT INTO TransactionType (type) VALUES ('CHEQUE_PAID_IN');
 INSERT INTO TransactionType (type) VALUES ('CLEARED_CHEQUE');
 INSERT INTO TransactionType (type) VALUES ('CREDIT_IN');
+INSERT INTO TransactionType (type) VALUES ('DEPOSIT');
 INSERT INTO TransactionType (type) VALUES ('DD');
 INSERT INTO TransactionType (type) VALUES ('FAST_PAYMENT');
 INSERT INTO TransactionType (type) VALUES ('FEES');

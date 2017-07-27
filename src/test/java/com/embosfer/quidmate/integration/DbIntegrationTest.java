@@ -5,7 +5,7 @@ import org.jooq.Record;
 import org.jooq.Result;
 import org.junit.Test;
 
-import static com.embosfer.quidmate.db.quidmate.tables.Transactiontype.TRANSACTIONTYPE;
+import static com.embosfer.quidmate.jooq.quidmate.tables.Transactiontype.TRANSACTIONTYPE;
 import static java.util.stream.Collectors.toList;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;

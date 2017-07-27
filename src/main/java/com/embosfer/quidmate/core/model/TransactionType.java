@@ -2,7 +2,7 @@ package com.embosfer.quidmate.core.model;
 
 import org.jooq.Record;
 
-import static com.embosfer.quidmate.db.quidmate.tables.Transactiontype.TRANSACTIONTYPE;
+import static com.embosfer.quidmate.jooq.quidmate.tables.Transactiontype.TRANSACTIONTYPE;
 
 /**
  * Created by embosfer on 28/05/2017.

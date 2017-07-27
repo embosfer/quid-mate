@@ -22,7 +22,7 @@ jooq {
                 javaTimeTypes = true
             }
             target {
-                packageName = 'com.embosfer.quidmate.db'
+                packageName = 'com.embosfer.quidmate.jooq'
                 directory = 'src/main/java'
             }
         }

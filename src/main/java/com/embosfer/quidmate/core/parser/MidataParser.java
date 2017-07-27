@@ -30,6 +30,7 @@ public class MidataParser {
         try (Stream<String> lines = Files.lines(Paths.get(midataFile.getAbsolutePath()), CHARSET)) {
             return lines
                     .skip(1) // skip header
+                    .filter(line -> !line.isEmpty() && !line.startsWith("Arranged overdraft"))
                     .map(line -> {
                         String[] fields = line.split(";");
                         int i = 0;

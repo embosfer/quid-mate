@@ -49,18 +49,28 @@ public class MidataSupport {
             try {
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile), ISO_8859_1));
                 writer.write(this.header + "\n");
-                for (Transaction transaction : this.transactions) {
-                    writer.append(transaction.date.format(ofPattern("dd/MM/yyyy"))).append(";")
-                            .append(transaction.type.toString()).append(";")
-                            .append(transaction.description.value).append(";")
-                            .append(transaction.debitCredit.toString()).append(";")
-                            .append(transaction.balance.toString()).append(";");
-                    writer.newLine();
-                }
+                writeTransactions(writer);
+                writeTrailer(writer);
                 writer.flush();
                 writer.close();
             } catch (IOException e) {
                 throw new RuntimeException("Something wrong when creating file " + this.name);
+            }
+        }
+
+        private void writeTrailer(BufferedWriter writer) throws IOException {
+            writer.newLine();
+            writer.append("Arranged overdraft limit;").append("22/05/2017").append(";").append("+£").append("500.00").append(";");
+        }
+
+        private void writeTransactions(BufferedWriter writer) throws IOException {
+            for (Transaction transaction : this.transactions) {
+                writer.append(transaction.date.format(ofPattern("dd/MM/yyyy"))).append(";")
+                        .append(transaction.type.toString()).append(";")
+                        .append(transaction.description.value).append(";")
+                        .append(transaction.debitCredit.toString()).append(";")
+                        .append(transaction.balance.toString()).append(";");
+                writer.newLine();
             }
         }
     }

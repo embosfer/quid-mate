@@ -3,6 +3,7 @@ package com.embosfer.quidmate.gui;
 import com.embosfer.quidmate.core.exceptions.UnknownFileFormatException;
 import com.embosfer.quidmate.core.model.Transaction;
 import com.embosfer.quidmate.core.parser.MidataParser;
+import com.embosfer.quidmate.db.DbConnection;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
@@ -16,7 +17,7 @@ import java.util.List;
  */
 public class GuiMainPane extends StackPane {
 
-    public GuiMainPane(Stage primaryStage, MidataParser midataParser) {
+    public GuiMainPane(Stage primaryStage, MidataParser midataParser, DbConnection dbConnection) {
         Button button = new Button("Upload midata file");
 //        button.setId("uploadMidataFileBtn"); // TODO: review this
 
@@ -28,6 +29,7 @@ public class GuiMainPane extends StackPane {
                 try {
                     List<Transaction> transactions = midataParser.parse(file); // TODO: do this on a separate thread
                     System.out.println(transactions);
+                    dbConnection.store(transactions);
                 } catch (UnknownFileFormatException e) {
                     // TODO: show popup error
                 }

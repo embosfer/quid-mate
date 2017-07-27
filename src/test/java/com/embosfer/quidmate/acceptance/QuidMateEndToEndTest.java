@@ -1,7 +1,10 @@
 package com.embosfer.quidmate.acceptance;
 
-import com.embosfer.quidmate.core.model.*;
-import com.embosfer.quidmate.doubles.FakeDatabase;
+import com.embosfer.quidmate.core.model.Balance;
+import com.embosfer.quidmate.core.model.DebitCredit;
+import com.embosfer.quidmate.core.model.Description;
+import com.embosfer.quidmate.core.model.Transaction;
+import com.embosfer.quidmate.doubles.FakeDbConnection;
 import com.embosfer.quidmate.support.QuidMateRunner;
 import javafx.stage.Stage;
 import org.junit.After;
@@ -12,23 +15,21 @@ import org.testfx.framework.junit.ApplicationTest;
 import java.sql.SQLException;
 import java.time.LocalDate;
 
+import static com.embosfer.quidmate.core.model.TransactionType.CARD_PAYMENT;
 import static com.embosfer.quidmate.core.model.TransactionType.CASH_WDL;
 import static com.embosfer.quidmate.support.MidataSupport.file;
-import static com.embosfer.quidmate.core.model.TransactionType.CARD_PAYMENT;
-import static java.lang.String.format;
 
 /**
  * Created by embosfer on 21/05/2017.
  */
 public class QuidMateEndToEndTest extends ApplicationTest {
 
-    QuidMateRunner gui = new QuidMateRunner();
-    FakeDatabase db = new FakeDatabase();
+    FakeDbConnection db = new FakeDbConnection();
+    QuidMateRunner gui = new QuidMateRunner(db);
 
     @Override
     public void start(Stage stage) throws Exception {
         gui.start(stage); // delegate
-        db.starts(); // TODO check if this doesn't create issues...
     }
 
     @Test
@@ -48,8 +49,6 @@ public class QuidMateEndToEndTest extends ApplicationTest {
         gui.showsTransactionsWereLoaded(2);
         gui.showsTotalExpenses(3.00); // TODO review decimal points
         gui.shows(transactions);
-
-        db.stops();
     }
 
     // TODO: test with a non expected file pops an error message
@@ -93,7 +92,7 @@ public class QuidMateEndToEndTest extends ApplicationTest {
 
     @After
     public void cleanUp() {
-        gui.stop();
+        gui.stop(); //TODO not sure yet if I need this
         db.stop();
     }
 

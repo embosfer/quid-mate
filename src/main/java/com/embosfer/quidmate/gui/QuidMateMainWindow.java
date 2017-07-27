@@ -1,6 +1,7 @@
 package com.embosfer.quidmate.gui;
 
 import com.embosfer.quidmate.core.parser.MidataParser;
+import com.embosfer.quidmate.db.DefaultDbConnection;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -12,7 +13,7 @@ public class QuidMateMainWindow extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        GuiMainPane guiMainPane = new GuiMainPane(primaryStage, new MidataParser());
+        GuiMainPane guiMainPane = new GuiMainPane(primaryStage, new MidataParser(), new DefaultDbConnection());
 
         Scene myScene = new Scene(guiMainPane);
         primaryStage.setScene(myScene);

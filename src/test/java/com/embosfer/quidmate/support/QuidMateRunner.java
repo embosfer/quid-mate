@@ -1,24 +1,28 @@
 package com.embosfer.quidmate.support;
 
-import com.embosfer.quidmate.Main;
 import com.embosfer.quidmate.core.model.Transaction;
 import com.embosfer.quidmate.core.parser.MidataParser;
+import com.embosfer.quidmate.db.DbConnection;
 import com.embosfer.quidmate.gui.GuiMainPane;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import org.testfx.framework.junit.ApplicationTest;
 
-import static java.time.format.DateTimeFormatter.ofPattern;
-
 /**
  * Created by embosfer on 28/05/2017.
  */
 public class QuidMateRunner extends ApplicationTest {
 
+    private final DbConnection db;
+
+    public QuidMateRunner(DbConnection db) {
+        this.db = db;
+    }
+
     @Override
     public void start(Stage stage) throws Exception {
-        GuiMainPane guiMainPane = new GuiMainPane(stage, new MidataParser());
+        GuiMainPane guiMainPane = new GuiMainPane(stage, new MidataParser(), db);
 
         stage.setScene(new Scene(guiMainPane, 500, 500));
         stage.show();
@@ -41,22 +45,6 @@ public class QuidMateRunner extends ApplicationTest {
     }
 
     public void showsTotalExpenses(double totalExpenses) {
-    }
-
-    public void starts() {
-        Thread thread = new Thread("Test Application") {
-            @Override
-            public void run() {
-                try {
-                    Main.main();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-        thread.setDaemon(true);
-        thread.start();
-//        driver = new QuidMateJFrameDriver(1000);
     }
 
     public void stop() {

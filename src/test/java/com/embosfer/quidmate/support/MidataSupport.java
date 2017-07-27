@@ -1,12 +1,10 @@
 package com.embosfer.quidmate.support;
 
-import com.embosfer.quidmate.core.model.*;
+import com.embosfer.quidmate.core.model.Transaction;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 
+import static java.nio.charset.StandardCharsets.ISO_8859_1;
 import static java.time.format.DateTimeFormatter.ofPattern;
 
 /**
@@ -48,17 +46,20 @@ public class MidataSupport {
         }
 
         private void createActualFileInSystem() {
-            try (PrintWriter writer = new PrintWriter(new FileWriter(outputFile))) {
+            try {
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile), ISO_8859_1));
                 writer.write(this.header + "\n");
                 for (Transaction transaction : this.transactions) {
-                    writer.printf("%s;", transaction.date.format(ofPattern("dd/MM/yyyy")));
-                    writer.printf("%s;", transaction.type);
-                    writer.printf("%s;", transaction.description.value);
-                    writer.printf("%s;", transaction.debitCredit);
-                    writer.printf("%s;", transaction.balance);
-                    writer.write("\n");
+                    writer.append(transaction.date.format(ofPattern("dd/MM/yyyy"))).append(";")
+                            .append(transaction.type.toString()).append(";")
+                            .append(transaction.description.value).append(";")
+                            .append(transaction.debitCredit.toString()).append(";")
+                            .append(transaction.balance.toString()).append(";");
+                    writer.newLine();
                 }
-            } catch (IOException ex) {
+                writer.flush();
+                writer.close();
+            } catch (IOException e) {
                 throw new RuntimeException("Something wrong when creating file " + this.name);
             }
         }

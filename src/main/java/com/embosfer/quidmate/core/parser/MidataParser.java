@@ -5,14 +5,12 @@ import com.embosfer.quidmate.core.model.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.time.format.DateTimeFormatter.ofPattern;
@@ -24,11 +22,12 @@ import static java.util.stream.Collectors.toList;
 public class MidataParser {
 
     private static final DateTimeFormatter DATE_TIME_FORMATTER = ofPattern("dd/MM/yyyy");
+    private static final Charset CHARSET = Charset.forName("ISO-8859-1");
 
     public List<Transaction> parse(File midataFile) throws UnknownFileFormatException {
         if (midataFile.length() == 0) throw new UnknownFileFormatException(midataFile.getName());
 
-        try (Stream<String> lines = Files.lines(Paths.get(midataFile.getAbsolutePath()))) {
+        try (Stream<String> lines = Files.lines(Paths.get(midataFile.getAbsolutePath()), CHARSET)) {
             return lines
                     .skip(1) // skip header
                     .map(line -> {

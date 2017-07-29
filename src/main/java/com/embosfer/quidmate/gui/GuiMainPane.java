@@ -19,7 +19,7 @@ public class GuiMainPane extends StackPane {
 
     public GuiMainPane(Stage primaryStage, MidataParser midataParser, DbConnection dbConnection) {
         Button button = new Button("Upload midata file");
-//        button.setId("uploadMidataFileBtn"); // TODO: review this
+        button.setId("uploadMidataFileBtn");
 
         button.setOnAction(event -> {
             FileChooser fileChooser = new FileChooser();

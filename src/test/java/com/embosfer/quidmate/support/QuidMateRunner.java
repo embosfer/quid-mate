@@ -30,7 +30,7 @@ public class QuidMateRunner extends ApplicationTest {
 
     public void loadsMidataFile(MidataSupport.MidataFile file) {
         // TODO for now file not used => should we use the name to be sure we get the right file?
-        clickOn(".button").press(KeyCode.DOWN).press(KeyCode.ENTER);
+        clickOn("#uploadMidataFileBtn").press(KeyCode.DOWN).press(KeyCode.ENTER);
     }
 
     public void shows(Transaction[] transactions) {

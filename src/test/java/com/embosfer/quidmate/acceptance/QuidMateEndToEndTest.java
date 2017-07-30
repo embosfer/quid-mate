@@ -12,7 +12,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.testfx.framework.junit.ApplicationTest;
 
-import java.sql.SQLException;
 import java.time.LocalDate;
 
 import static com.embosfer.quidmate.core.model.TransactionType.CARD_PAYMENT;
@@ -33,7 +32,7 @@ public class QuidMateEndToEndTest extends ApplicationTest {
     }
 
     @Test
-    public void uploadingMidataFileShowsTransactionsOnGUIAndTotalExpenses() throws SQLException {
+    public void uploadingMidataFileShowsTransactionsOnGUIAndTotalExpenses() throws Exception {
 
         Transaction[] transactions = {
                 Transaction.of(LocalDate.of(2017, 5, 28), CARD_PAYMENT, Description.of("CARD PAYMENT TO X"), DebitCredit.of(-2.00), Balance.of(998.00)),

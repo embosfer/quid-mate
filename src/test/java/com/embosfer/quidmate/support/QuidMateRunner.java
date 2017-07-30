@@ -1,5 +1,6 @@
 package com.embosfer.quidmate.support;
 
+import com.embosfer.quidmate.core.MidataFileProvider;
 import com.embosfer.quidmate.core.model.Transaction;
 import com.embosfer.quidmate.core.parser.MidataParser;
 import com.embosfer.quidmate.db.DbConnection;
@@ -9,12 +10,18 @@ import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import org.testfx.framework.junit.ApplicationTest;
 
+import java.util.Optional;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 /**
  * Created by embosfer on 28/05/2017.
  */
 public class QuidMateRunner extends ApplicationTest {
 
     private final DbConnection db;
+    private final MidataFileProvider midataFileProvider = mock(MidataFileProvider.class);
 
     public QuidMateRunner(DbConnection db) {
         this.db = db;
@@ -22,14 +29,15 @@ public class QuidMateRunner extends ApplicationTest {
 
     @Override
     public void start(Stage stage) throws Exception {
-        GuiMainPane guiMainPane = new GuiMainPane(stage, new MidataParser(), db);
+        GuiMainPane guiMainPane = new GuiMainPane(midataFileProvider, new MidataParser(), db);
 
         stage.setScene(new Scene(guiMainPane, 500, 500));
         stage.show();
     }
 
+
     public void loadsMidataFile(MidataSupport.MidataFile file) {
-        // TODO for now file not used => should we use the name to be sure we get the right file?
+        when(this.midataFileProvider.getFile()).thenReturn(Optional.of(file.outputFile));
         clickOn("#uploadMidataFileBtn").press(KeyCode.DOWN).press(KeyCode.ENTER);
     }
 

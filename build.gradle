@@ -16,6 +16,9 @@ apply from: 'jooq.gradle'
 repositories {
     mavenCentral()
     jcenter()
+    maven {
+        url 'http://central.maven.org/maven2'
+    }
 }
 
 dependencies {
@@ -31,4 +34,5 @@ dependencies {
     testCompile 'junit:junit:4.+'
     testCompile "org.testfx:testfx-core:4.0.+"
     testCompile "org.testfx:testfx-junit:4.0.+"
+    testCompile 'org.mockito:mockito-core:2.+'
 }

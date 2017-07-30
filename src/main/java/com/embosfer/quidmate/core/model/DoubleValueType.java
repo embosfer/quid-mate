@@ -3,7 +3,7 @@ package com.embosfer.quidmate.core.model;
 /**
  * Created by embosfer on 23/07/2017.
  */
-public class DoubleValueType extends ValueType {
+public class DoubleValueType {
 
     public final double value;
 
@@ -13,6 +13,14 @@ public class DoubleValueType extends ValueType {
 
     public static double fromCSV(String csvValue) {
         return Double.parseDouble(csvValue.replace("£", ""));
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof DoubleValueType)) return false;
+        DoubleValueType other = (DoubleValueType) obj;
+        return this.value == other.value;
     }
 
     @Override

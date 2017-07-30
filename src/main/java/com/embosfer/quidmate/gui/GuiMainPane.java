@@ -6,6 +6,7 @@ import com.embosfer.quidmate.core.model.Transaction;
 import com.embosfer.quidmate.core.parser.MidataParser;
 import com.embosfer.quidmate.db.DbConnection;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 
 import java.io.File;
@@ -20,6 +21,8 @@ public class GuiMainPane extends VBox {
     public GuiMainPane(TransactionsTable transactionsTable, MidataFileProvider midataFileProvider, MidataParser midataParser, DbConnection dbConnection) {
         Button button = new Button("Upload midata file");
         button.setId("uploadMidataFileBtn");
+        Label label = new Label();
+        label.setId("numberOfTransactionsLoaded");
 
         button.setOnAction(event -> {
             Optional<File> optionalFile = midataFileProvider.getFile();
@@ -29,13 +32,14 @@ public class GuiMainPane extends VBox {
                     System.out.println(transactions);
                     dbConnection.store(transactions);
                     transactionsTable.add(transactions);
+                    label.setText(transactions.size() + " transactions were loaded.");
                 } catch (UnknownFileFormatException e) {
                     // TODO: show popup error
                 }
             });
         });
 
-        getChildren().addAll(button, transactionsTable);
+        getChildren().addAll(button, label, transactionsTable);
     }
 
 }

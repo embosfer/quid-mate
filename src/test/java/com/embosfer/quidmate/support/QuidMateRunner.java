@@ -10,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import org.testfx.framework.junit.ApplicationTest;
+import org.testfx.matcher.control.LabeledMatchers;
 
 import java.util.Optional;
 
@@ -51,7 +52,10 @@ public class QuidMateRunner extends ApplicationTest {
     }
 
     public void showsTransactionsWereLoaded(int noTransactions) {
+        verifyThat("#numberOfTransactionsLoaded", LabeledMatchers.hasText(noTransactions + " transactions were loaded."));
     }
+
+
 
     public void showsTotalExpenses(double totalExpenses) {
     }

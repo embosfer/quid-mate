@@ -45,9 +45,9 @@ public class QuidMateEndToEndTest extends ApplicationTest {
 
         db.contains(transactions);
 
+        gui.shows(transactions);
         gui.showsTransactionsWereLoaded(2);
         gui.showsTotalExpenses(3.00); // TODO review decimal points
-        gui.shows(transactions);
     }
 
     // TODO: test with a non expected file pops an error message

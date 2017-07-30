@@ -14,7 +14,7 @@ public class QuidMateMainWindow extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        GuiMainPane guiMainPane = new GuiMainPane(new MidataFileProvider(primaryStage), new MidataParser(), new DefaultDbConnection());
+        GuiMainPane guiMainPane = new GuiMainPane(new TransactionsTable(), new MidataFileProvider(primaryStage), new MidataParser(), new DefaultDbConnection());
 
         Scene myScene = new Scene(guiMainPane);
         primaryStage.setScene(myScene);

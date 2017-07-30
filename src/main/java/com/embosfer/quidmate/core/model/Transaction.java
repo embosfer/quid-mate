@@ -48,4 +48,25 @@ public class Transaction {
     public String toString() {
         return "[" + date + ", " + type + ", Description: " + description + ", Debit/Credit: " + debitCredit + ", Balance: " + balance + "]";
     }
+
+    // These getters are created so JavaFX columns can be retrieved via reflection...
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public TransactionType getType() {
+        return type;
+    }
+
+    public Description getDescription() {
+        return description;
+    }
+
+    public DebitCredit getDebitCredit() {
+        return debitCredit;
+    }
+
+    public Balance getBalance() {
+        return balance;
+    }
 }

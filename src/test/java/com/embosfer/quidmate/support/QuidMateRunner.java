@@ -5,6 +5,7 @@ import com.embosfer.quidmate.core.model.Transaction;
 import com.embosfer.quidmate.core.parser.MidataParser;
 import com.embosfer.quidmate.db.DbConnection;
 import com.embosfer.quidmate.gui.GuiMainPane;
+import com.embosfer.quidmate.gui.TransactionsTable;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
@@ -14,6 +15,8 @@ import java.util.Optional;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.testfx.api.FxAssert.verifyThat;
+import static org.testfx.matcher.control.TableViewMatchers.containsRow;
 
 /**
  * Created by embosfer on 28/05/2017.
@@ -29,7 +32,7 @@ public class QuidMateRunner extends ApplicationTest {
 
     @Override
     public void start(Stage stage) throws Exception {
-        GuiMainPane guiMainPane = new GuiMainPane(midataFileProvider, new MidataParser(), db);
+        GuiMainPane guiMainPane = new GuiMainPane(new TransactionsTable(), midataFileProvider, new MidataParser(), db);
 
         stage.setScene(new Scene(guiMainPane, 500, 500));
         stage.show();
@@ -43,9 +46,7 @@ public class QuidMateRunner extends ApplicationTest {
 
     public void shows(Transaction[] transactions) {
         for (Transaction transaction : transactions) {
-//            driver.shows(transaction);
-
-
+            verifyThat("#LoadedTransactions", containsRow(transaction.date, transaction.type, transaction.description, transaction.debitCredit, transaction.balance));
         }
     }
 

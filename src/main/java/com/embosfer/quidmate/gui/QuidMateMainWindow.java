@@ -18,8 +18,8 @@ public class QuidMateMainWindow extends Application {
 
         Scene myScene = new Scene(guiMainPane);
         primaryStage.setScene(myScene);
-        primaryStage.setWidth(400);
-        primaryStage.setHeight(300);
+        primaryStage.setWidth(1200);
+        primaryStage.setHeight(1000);
         primaryStage.show();
     }
 

@@ -24,30 +24,35 @@ public class TransactionsTable extends TableView<Transaction> {
     }
     private TableColumn<Transaction, LocalDate> dateColumn() {
         TableColumn<Transaction, LocalDate> dateColumn = new TableColumn<>("Date");
+        dateColumn.setPrefWidth(100);
         dateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
         return dateColumn;
     }
 
     private TableColumn<Transaction, TransactionType> typeColumn() {
         TableColumn<Transaction, TransactionType> typeColumn = new TableColumn<>("Type");
+        typeColumn.setPrefWidth(150);
         typeColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
         return typeColumn;
     }
 
     private TableColumn<Transaction, Description> descriptionColumn() {
         TableColumn<Transaction, Description> descriptionColumn = new TableColumn<>("Description");
+        descriptionColumn.setPrefWidth(750);
         descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
         return descriptionColumn;
     }
 
     private TableColumn<Transaction, DebitCredit> debitCreditColumn() {
         TableColumn<Transaction, DebitCredit> debitCreditColumn = new TableColumn<>("Debit/Credit");
+        debitCreditColumn.setPrefWidth(100);
         debitCreditColumn.setCellValueFactory(new PropertyValueFactory<>("debitCredit"));
         return debitCreditColumn;
     }
 
     private TableColumn<Transaction, Balance> balanceColumn() {
         TableColumn<Transaction, Balance> balanceColumn = new TableColumn<>("Balance");
+        balanceColumn.setPrefWidth(100);
         balanceColumn.setCellValueFactory(new PropertyValueFactory<>("balance"));
         return balanceColumn;
     }

@@ -1,7 +1,9 @@
 package com.embosfer.quidmate.gui;
 
 import com.embosfer.quidmate.core.MidataFileProvider;
+import com.embosfer.quidmate.core.TransactionLabeler;
 import com.embosfer.quidmate.core.exceptions.UnknownFileFormatException;
+import com.embosfer.quidmate.core.model.LabeledTransaction;
 import com.embosfer.quidmate.core.model.Transaction;
 import com.embosfer.quidmate.core.parser.MidataParser;
 import com.embosfer.quidmate.db.DbConnection;
@@ -18,7 +20,11 @@ import java.util.Optional;
  */
 public class GuiMainPane extends VBox {
 
-    public GuiMainPane(TransactionsTable transactionsTable, MidataFileProvider midataFileProvider, MidataParser midataParser, DbConnection dbConnection) {
+    public GuiMainPane(TransactionsTable transactionsTable,
+                       MidataFileProvider midataFileProvider, MidataParser midataParser,
+                       TransactionLabeler transactionLabeler,
+                       DbConnection dbConnection) {
+
         Button button = new Button("Upload midata file");
         button.setId("uploadMidataFileBtn");
         Label label = new Label();
@@ -29,10 +35,10 @@ public class GuiMainPane extends VBox {
             optionalFile.ifPresent(file -> {
                 try {
                     List<Transaction> transactions = midataParser.parse(file); // TODO: do this on a separate thread
-                    System.out.println(transactions);
                     dbConnection.store(transactions);
-                    transactionsTable.add(transactions);
-                    label.setText(transactions.size() + " transactions were loaded.");
+                    List<LabeledTransaction> labeledTransactions = transactionLabeler.label(transactions);
+                    transactionsTable.add(labeledTransactions);
+                    label.setText(labeledTransactions.size() + " transactions were loaded.");
                 } catch (UnknownFileFormatException e) {
                     // TODO: show popup error
                 }

@@ -1,5 +1,6 @@
 package com.embosfer.quidmate.db;
 
+import com.embosfer.quidmate.core.model.Label;
 import com.embosfer.quidmate.core.model.Transaction;
 
 import java.util.List;
@@ -11,6 +12,11 @@ public class DefaultDbConnection implements DbConnection {
 
     @Override
     public void store(List<Transaction> transactions) {
+        throw new RuntimeException("Forgot to impl.");
+    }
 
+    @Override
+    public List<Label> getAllLabels() {
+        throw new RuntimeException("Forgot to impl.");
     }
 }

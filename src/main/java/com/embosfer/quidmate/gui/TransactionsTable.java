@@ -16,49 +16,56 @@ import static java.util.stream.Collectors.toCollection;
 /**
  * Created by embosfer on 30/07/2017.
  */
-public class TransactionsTable extends TableView<Transaction> {
+public class TransactionsTable extends TableView<LabeledTransaction> {
 
     public TransactionsTable() {
         setId("LoadedTransactions");
-        getColumns().addAll(dateColumn(), typeColumn(), descriptionColumn(), debitCreditColumn(), balanceColumn());
+        getColumns().addAll(dateColumn(), typeColumn(), descriptionColumn(), debitCreditColumn(), balanceColumn(), labelsColumn());
     }
-    private TableColumn<Transaction, LocalDate> dateColumn() {
-        TableColumn<Transaction, LocalDate> dateColumn = new TableColumn<>("Date");
+    private TableColumn<LabeledTransaction, LocalDate> dateColumn() {
+        TableColumn<LabeledTransaction, LocalDate> dateColumn = new TableColumn<>("Date");
         dateColumn.setPrefWidth(100);
         dateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
         return dateColumn;
     }
 
-    private TableColumn<Transaction, TransactionType> typeColumn() {
-        TableColumn<Transaction, TransactionType> typeColumn = new TableColumn<>("Type");
+    private TableColumn<LabeledTransaction, TransactionType> typeColumn() {
+        TableColumn<LabeledTransaction, TransactionType> typeColumn = new TableColumn<>("Type");
         typeColumn.setPrefWidth(150);
         typeColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
         return typeColumn;
     }
 
-    private TableColumn<Transaction, Description> descriptionColumn() {
-        TableColumn<Transaction, Description> descriptionColumn = new TableColumn<>("Description");
+    private TableColumn<LabeledTransaction, Description> descriptionColumn() {
+        TableColumn<LabeledTransaction, Description> descriptionColumn = new TableColumn<>("Description");
         descriptionColumn.setPrefWidth(750);
         descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
         return descriptionColumn;
     }
 
-    private TableColumn<Transaction, DebitCredit> debitCreditColumn() {
-        TableColumn<Transaction, DebitCredit> debitCreditColumn = new TableColumn<>("Debit/Credit");
+    private TableColumn<LabeledTransaction, DebitCredit> debitCreditColumn() {
+        TableColumn<LabeledTransaction, DebitCredit> debitCreditColumn = new TableColumn<>("Debit/Credit");
         debitCreditColumn.setPrefWidth(100);
         debitCreditColumn.setCellValueFactory(new PropertyValueFactory<>("debitCredit"));
         return debitCreditColumn;
     }
 
-    private TableColumn<Transaction, Balance> balanceColumn() {
-        TableColumn<Transaction, Balance> balanceColumn = new TableColumn<>("Balance");
+    private TableColumn<LabeledTransaction, Balance> balanceColumn() {
+        TableColumn<LabeledTransaction, Balance> balanceColumn = new TableColumn<>("Balance");
         balanceColumn.setPrefWidth(100);
         balanceColumn.setCellValueFactory(new PropertyValueFactory<>("balance"));
         return balanceColumn;
     }
 
-    public void add(List<Transaction> transactions) {
-        ObservableList<Transaction> items = transactions.stream().collect(toCollection(FXCollections::observableArrayList));
+    private TableColumn<LabeledTransaction, Balance> labelsColumn() {
+        TableColumn<LabeledTransaction, Balance> labelsColumn = new TableColumn<>("Labels");
+        labelsColumn.setPrefWidth(100);
+        labelsColumn.setCellValueFactory(new PropertyValueFactory<>("labels"));
+        return labelsColumn;
+    }
+
+    public void add(List<LabeledTransaction> transactions) {
+        ObservableList<LabeledTransaction> items = transactions.stream().collect(toCollection(FXCollections::observableArrayList));
         setItems(items);
     }
 }

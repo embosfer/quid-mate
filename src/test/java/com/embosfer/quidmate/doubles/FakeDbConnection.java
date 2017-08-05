@@ -1,5 +1,6 @@
 package com.embosfer.quidmate.doubles;
 
+import com.embosfer.quidmate.core.model.Label;
 import com.embosfer.quidmate.core.model.Transaction;
 import com.embosfer.quidmate.db.DbConnection;
 
@@ -17,11 +18,17 @@ import static java.util.Arrays.asList;
 public class FakeDbConnection implements DbConnection {
 
     List<Transaction> storedTransactions = new ArrayList<>();
+    List<Label> labelsInDb = new ArrayList<>();
 
     @Override
     public void store(List<Transaction> transactions) {
         System.out.println("Storing " + transactions);
         storedTransactions.addAll(transactions);
+    }
+
+    @Override
+    public List<Label> getAllLabels() {
+        return labelsInDb;
     }
 
     public void contains(Transaction[] transactions) throws InterruptedException {
@@ -46,4 +53,7 @@ public class FakeDbConnection implements DbConnection {
     public void stops() throws SQLException {
     }
 
+    public void has(Label label) {
+        this.labelsInDb.add(label);
+    }
 }

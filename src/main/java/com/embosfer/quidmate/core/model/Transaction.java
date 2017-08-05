@@ -14,7 +14,7 @@ public class Transaction {
     public final DebitCredit debitCredit;
     public final Balance balance;
 
-    public Transaction(LocalDate localDate, TransactionType type, Description description, DebitCredit debitCredit, Balance balance) {
+    protected Transaction(LocalDate localDate, TransactionType type, Description description, DebitCredit debitCredit, Balance balance) {
         this.date = localDate;
         this.type = type;
         this.description = description;
@@ -49,24 +49,4 @@ public class Transaction {
         return "[" + date + ", " + type + ", Description: " + description + ", Debit/Credit: " + debitCredit + ", Balance: " + balance + "]";
     }
 
-    // These getters are created so JavaFX columns can be retrieved via reflection...
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public TransactionType getType() {
-        return type;
-    }
-
-    public Description getDescription() {
-        return description;
-    }
-
-    public DebitCredit getDebitCredit() {
-        return debitCredit;
-    }
-
-    public Balance getBalance() {
-        return balance;
-    }
 }

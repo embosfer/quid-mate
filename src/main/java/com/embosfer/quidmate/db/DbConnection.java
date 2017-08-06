@@ -1,7 +1,7 @@
 package com.embosfer.quidmate.db;
 
 import com.embosfer.quidmate.core.model.Label;
-import com.embosfer.quidmate.core.model.Transaction;
+import com.embosfer.quidmate.core.model.LabeledTransaction;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ import java.util.List;
  */
 public interface DbConnection {
 
-    void store(List<Transaction> transactions);
+    void store(List<LabeledTransaction> transactions); // TODO store labeled transactions instead
 
     List<Label> getAllLabels();
 }

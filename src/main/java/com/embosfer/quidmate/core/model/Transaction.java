@@ -14,7 +14,7 @@ public class Transaction {
     public final DebitCredit debitCredit;
     public final Balance balance;
 
-    protected Transaction(LocalDate localDate, TransactionType type, Description description, DebitCredit debitCredit, Balance balance) {
+    private Transaction(LocalDate localDate, TransactionType type, Description description, DebitCredit debitCredit, Balance balance) {
         this.date = localDate;
         this.type = type;
         this.description = description;

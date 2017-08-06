@@ -1,8 +1,8 @@
 package com.embosfer.quidmate.core.model;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.joining;
 
@@ -12,18 +12,18 @@ import static java.util.stream.Collectors.joining;
 public class Label {
 
     public final Description description;
-    public final List<String> wordsToFind;
+    public final String[] wordsToFind;
     public final Pattern patternToFind;
     public final Optional<Label> parentLabel;
 
-    private Label(Description description, List<String> wordsToFind, Label parentLabel) {
+    private Label(Description description, Label parentLabel, String... wordsToFind) {
         this.description = description;
         this.wordsToFind = wordsToFind; // TODO Guava immutable
-        this.patternToFind = Pattern.compile(wordsToFind.stream().collect(joining("|")));
+        this.patternToFind = Pattern.compile(Stream.of(wordsToFind).collect(joining("|")));
         this.parentLabel = Optional.ofNullable(parentLabel);
     }
 
-    public static Label of(Description description, List<String> wordsToFind, Label parentLabel) {
-        return new Label(description, wordsToFind, parentLabel);
+    public static Label of(Description description, Label parentLabel, String... wordsToFind) {
+        return new Label(description, parentLabel, wordsToFind);
     }
 }

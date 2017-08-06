@@ -48,7 +48,7 @@ public class TransactionLabelerTest {
 
     @Test
     public void transactionThatDoesntMatchWithAnyLabelGetsAnEmptyLabelList() {
-        when(dbConnection.getAllLabels()).thenReturn(asList(Label.of(null, asList("ABC"), null)));
+        when(dbConnection.getAllLabels()).thenReturn(asList(Label.of(null, null, "ABC")));
 
         List<LabeledTransaction> labeledTransactions = labeler.label(asList(transactionToBeLabeled));
 

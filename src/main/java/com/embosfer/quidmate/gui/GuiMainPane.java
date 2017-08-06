@@ -35,8 +35,8 @@ public class GuiMainPane extends VBox {
             optionalFile.ifPresent(file -> {
                 try {
                     List<Transaction> transactions = midataParser.parse(file); // TODO: do this on a separate thread
-                    dbConnection.store(transactions);
                     List<LabeledTransaction> labeledTransactions = transactionLabeler.label(transactions);
+                    dbConnection.store(labeledTransactions);
                     transactionsTable.add(labeledTransactions);
                     label.setText(labeledTransactions.size() + " transactions were loaded.");
                 } catch (UnknownFileFormatException e) {

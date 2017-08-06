@@ -31,29 +31,30 @@ public class QuidMateEndToEndTest extends ApplicationTest {
     }
 
     @Test
-    public void uploadingMidataFileShowsLabeledTransactionsOnGUIAndTotalExpenses() throws Exception {
-        Label billsParentLabel = Label.of(Description.of("Bills"), asList("EDF", "E\\.ON"), null);
+    public void uploadingMidataFileShowsLabeledTransactionsOnGUI() throws Exception {
+        Label billsParentLabel = Label.of(Description.of("Bills"), null, "EDF", "E\\.ON");
+        Label electricityLabel = Label.of(Description.of("Electricity"), billsParentLabel, "EDF");
+        Label gasLabel = Label.of(Description.of("Gas"), billsParentLabel, "E.ON");
         db.has(billsParentLabel);
-        db.has(Label.of(Description.of("Electricity"), asList("EDF"), billsParentLabel));
-        db.has(Label.of(Description.of("Gas"), asList("E.ON"), billsParentLabel));
+        db.has(electricityLabel);
+        db.has(gasLabel);
 
         Transaction electricityTransaction =
                 Transaction.of(LocalDate.of(2017, 5, 28), DD, Description.of("DIRECT DEBIT PAYMENT TO EDF ENERGY REF"), DebitCredit.of(-50.00), Balance.of(950.00));
         Transaction gasTransaction =
                 Transaction.of(LocalDate.of(2017, 5, 27), CARD_PAYMENT, Description.of("CARD PAYMENT TO E.ON ENERGY SOLUTIONS"), DebitCredit.of(-30.00), Balance.of(1000));
 
-        Transaction[] transactions = {electricityTransaction, gasTransaction};
-
         gui.loadsMidataFile(file("test_transactions.csv")
                 .withHeader("Date;Type;Merchant/Description;Debit/Credit;Balance;")
-                .withTransactions(transactions));
+                .withTransactions(electricityTransaction, gasTransaction));
 
-        db.contains(transactions);
+        db.contains(asList(
+                LabeledTransaction.of(electricityTransaction, asList(billsParentLabel, electricityLabel)),
+                LabeledTransaction.of(gasTransaction, asList(billsParentLabel, gasLabel))));
 
         gui.showsLabeledTransaction(electricityTransaction, "Bills Electricity");
         gui.showsLabeledTransaction(gasTransaction, "Bills Gas");
         gui.showsTransactionsWereLoaded(2);
-        gui.showsTotalExpenses(3.00); // TODO review decimal points
     }
 
     // TODO: test with a non expected file pops an error message

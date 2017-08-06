@@ -1,7 +1,7 @@
 package com.embosfer.quidmate.db;
 
 import com.embosfer.quidmate.core.model.Label;
-import com.embosfer.quidmate.core.model.Transaction;
+import com.embosfer.quidmate.core.model.LabeledTransaction;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ import java.util.List;
 public class DefaultDbConnection implements DbConnection {
 
     @Override
-    public void store(List<Transaction> transactions) {
+    public void store(List<LabeledTransaction> transactions) {
         throw new RuntimeException("Forgot to impl.");
     }
 

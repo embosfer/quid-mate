@@ -39,9 +39,7 @@ public class MidataParser {
                                 Description.of(fields[i++]),
                                 DebitCredit.of(DoubleValueType.fromCSV(fields[i++])),
                                 Balance.of(DoubleValueType.fromCSV(fields[i++])));
-                        System.out.println(transaction);
                         return transaction;
-
                     })
                     .collect(toList());
 

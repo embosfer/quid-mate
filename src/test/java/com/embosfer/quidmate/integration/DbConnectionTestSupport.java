@@ -3,12 +3,11 @@ package com.embosfer.quidmate.integration;
 import com.embosfer.quidmate.core.model.Label;
 import com.embosfer.quidmate.core.model.LabeledTransaction;
 import com.embosfer.quidmate.db.DefaultDbConnection;
+import com.embosfer.quidmate.db.translator.LabelPatternTranslator;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.impl.DSL;
-import org.junit.After;
-import org.junit.Before;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -28,13 +27,15 @@ public class DbConnectionTestSupport extends DefaultDbConnection {
     private Connection checkerConnection;
     private List<LabeledTransaction> recordedTransactions;
 
-    @Before
+    public DbConnectionTestSupport(LabelPatternTranslator labelPatternTranslator) {
+        super(labelPatternTranslator);
+    }
+
     public void setUp() throws SQLException {
         openDbConnections();
         recordedTransactions = new ArrayList<>();
     }
 
-    @After
     public void tearDown() throws SQLException {
         removeTestRecordsFromDb();
         closeDbConnections();

@@ -1,8 +1,13 @@
 package com.embosfer.quidmate.integration;
 
 import com.embosfer.quidmate.core.model.*;
+import com.embosfer.quidmate.db.translator.LabelPatternTranslator;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 
 import static com.embosfer.quidmate.core.model.TransactionType.CARD_PAYMENT;
@@ -13,12 +18,24 @@ import static org.junit.Assert.assertThat;
 /**
  * Created by embosfer on 28/05/2017.
  */
-public class DbIntegrationTest extends DbConnectionTestSupport {
+public class DbIntegrationTest {
+
+    private final DbConnectionTestSupport dbConnection = new DbConnectionTestSupport(new LabelPatternTranslator());
+
+    @Before
+    public void setUp() throws SQLException {
+        dbConnection.setUp();
+    }
+
+    @After
+    public void tearDown() throws SQLException {
+        dbConnection.tearDown();
+    }
 
     @Test
     public void containsAllRequiredTransactionTypes() {
 
-        TransactionType[] dbTransactionTypes = getAllTransactionTypes()
+        TransactionType[] dbTransactionTypes = dbConnection.getAllTransactionTypes()
                                                     .toArray(new TransactionType[TransactionType.values().length]);
         assertThat(dbTransactionTypes, equalTo(TransactionType.values()));
     }
@@ -36,9 +53,17 @@ public class DbIntegrationTest extends DbConnectionTestSupport {
         LabeledTransaction labeledTransaction = LabeledTransaction.of(transaction,
                                                                         asList(billsLabel, internetLabel));
 
-        store(asList(labeledTransaction));
+        dbConnection.store(asList(labeledTransaction));
 
-        dbContains(labeledTransaction);
+        dbConnection.dbContains(labeledTransaction);
+    }
+
+    @Ignore
+    @Test
+    public void retrievesAllAvailableLabels() {
+
+//        List<Label> allLabels = getAllLabels();
+
     }
 
 }

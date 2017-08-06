@@ -1,9 +1,10 @@
 package com.embosfer.quidmate.db;
 
+import com.embosfer.quidmate.core.model.Description;
 import com.embosfer.quidmate.core.model.Label;
 import com.embosfer.quidmate.core.model.LabeledTransaction;
 import com.embosfer.quidmate.core.model.TransactionType;
-import com.embosfer.quidmate.jooq.quidmate.Tables;
+import com.embosfer.quidmate.db.translator.LabelPatternTranslator;
 import com.embosfer.quidmate.jooq.quidmate.tables.records.TransactionRecord;
 import org.jooq.DSLContext;
 import org.jooq.Record;
@@ -15,10 +16,14 @@ import org.slf4j.LoggerFactory;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import static com.embosfer.quidmate.jooq.quidmate.Tables.TRANSACTIONLABELLIST;
+import static com.embosfer.quidmate.jooq.quidmate.Tables.*;
 import static com.embosfer.quidmate.jooq.quidmate.tables.Transactiontype.TRANSACTIONTYPE;
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -28,8 +33,14 @@ public class DefaultDbConnection implements DbConnection {
 
     private static final Logger log = LoggerFactory.getLogger(DefaultDbConnection.class);
 
+    private final LabelPatternTranslator labelPatternTranslator;
+
     private Connection connection;
     private DSLContext execute;
+
+    public DefaultDbConnection(LabelPatternTranslator labelPatternTranslator) {
+        this.labelPatternTranslator = labelPatternTranslator;
+    }
 
     // TODO make it configurable
     @Override
@@ -51,17 +62,17 @@ public class DefaultDbConnection implements DbConnection {
     public void store(List<LabeledTransaction> transactions) {
 
         for (LabeledTransaction lt : transactions) {
-            TransactionRecord transactionRecord = execute.insertInto(Tables.TRANSACTION)
-                    .set(Tables.TRANSACTION.DATE, lt.transaction.date)
-                    .set(Tables.TRANSACTION.TYPE_ID, lt.transaction.type.id)
-                    .set(Tables.TRANSACTION.DESCRIPTION, lt.transaction.description.value)
-                    .set(Tables.TRANSACTION.DEBIT_CREDIT, lt.transaction.debitCredit.value)
-                    .set(Tables.TRANSACTION.BALANCE, lt.transaction.balance.value)
-                    .returning(Tables.TRANSACTION.ID)
+            TransactionRecord transactionRecord = execute.insertInto(TRANSACTION)
+                    .set(TRANSACTION.DATE, lt.transaction.date)
+                    .set(TRANSACTION.TYPE_ID, lt.transaction.type.id)
+                    .set(TRANSACTION.DESCRIPTION, lt.transaction.description.value)
+                    .set(TRANSACTION.DEBIT_CREDIT, lt.transaction.debitCredit.value)
+                    .set(TRANSACTION.BALANCE, lt.transaction.balance.value)
+                    .returning(TRANSACTION.ID)
                     .fetchOne();
             log.debug("Transaction ID {} stored.", transactionRecord.getId());
 
-            for (Label label: lt.labels) {
+            for (Label label : lt.labels) {
                 int noLabels = this.execute.insertInto(TRANSACTIONLABELLIST)
                         .set(TRANSACTIONLABELLIST.TRANSACTION_ID, transactionRecord.getId())
                         .set(TRANSACTIONLABELLIST.LABEL_ID, label.id)
@@ -74,7 +85,22 @@ public class DefaultDbConnection implements DbConnection {
 
     @Override
     public List<Label> getAllLabels() {
-        throw new RuntimeException("Forgot to impl.");
+
+        Result<Record> labelRecords = execute.select().from(TRANSACTIONLABEL).fetch();
+
+        List<Label> dbLabels = new ArrayList<>();
+        Map<Integer, Label> labelsById = new HashMap<>();
+
+        for (Record labelRecord : labelRecords) {
+            Label label = Label.of(labelRecord.get(TRANSACTIONLABEL.ID).intValue(),
+                    Description.of(labelRecord.get(TRANSACTIONLABEL.NAME)),
+                    labelsById.get(labelRecord.get(TRANSACTIONLABEL.PARENT_ID)),
+                    labelPatternTranslator.translateFromDbPatternToWords(labelRecord.get(TRANSACTIONLABEL.PATTERN)));
+            dbLabels.add(label);
+            labelsById.put(label.id, label);
+        }
+
+        return (dbLabels.size() > 0 ? dbLabels : emptyList());
     }
 
     @Override

@@ -28,4 +28,5 @@ public class Label {
     public static Label of(int id, Description description, Label parentLabel, String... wordsToFind) {
         return new Label(id, description, parentLabel, wordsToFind);
     }
+
 }

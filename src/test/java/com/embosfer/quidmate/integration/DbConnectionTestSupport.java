@@ -22,8 +22,7 @@ import static com.embosfer.quidmate.jooq.quidmate.Tables.TRANSACTIONLABELLIST;
 /**
  * Created by embosfer on 27/07/2017.
  */
-// TODO rename this to DbConnectionTestSupport?
-public class DbTestSupport extends DefaultDbConnection {
+public class DbConnectionTestSupport extends DefaultDbConnection {
 
     private DSLContext execute;
     private Connection checkerConnection;

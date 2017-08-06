@@ -13,7 +13,7 @@ import static org.junit.Assert.assertThat;
 /**
  * Created by embosfer on 28/05/2017.
  */
-public class DbIntegrationTest extends DbTestSupport {
+public class DbIntegrationTest extends DbConnectionTestSupport {
 
     @Test
     public void containsAllRequiredTransactionTypes() {

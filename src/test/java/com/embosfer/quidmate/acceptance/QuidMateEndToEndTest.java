@@ -32,9 +32,9 @@ public class QuidMateEndToEndTest extends ApplicationTest {
 
     @Test
     public void uploadingMidataFileShowsLabeledTransactionsOnGUI() throws Exception {
-        Label billsParentLabel = Label.of(Description.of("Bills"), null, "EDF", "E\\.ON");
-        Label electricityLabel = Label.of(Description.of("Electricity"), billsParentLabel, "EDF");
-        Label gasLabel = Label.of(Description.of("Gas"), billsParentLabel, "E.ON");
+        Label billsParentLabel = Label.of(1, Description.of("Bills"),null, "EDF", "E\\.ON");
+        Label electricityLabel = Label.of(2, Description.of("Electricity"), billsParentLabel, "EDF");
+        Label gasLabel = Label.of(3, Description.of("Gas"), billsParentLabel,"E.ON");
         db.has(billsParentLabel);
         db.has(electricityLabel);
         db.has(gasLabel);
@@ -93,7 +93,6 @@ public class QuidMateEndToEndTest extends ApplicationTest {
     @After
     public void cleanUp() {
         gui.stop(); //TODO not sure yet if I need this
-        db.stop();
     }
 
 }

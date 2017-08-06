@@ -2,12 +2,14 @@ package com.embosfer.quidmate.doubles;
 
 import com.embosfer.quidmate.core.model.Label;
 import com.embosfer.quidmate.core.model.LabeledTransaction;
+import com.embosfer.quidmate.core.model.TransactionType;
 import com.embosfer.quidmate.db.DbConnection;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.Thread.sleep;
+import static java.util.Collections.emptyList;
 
 /**
  * Created by embosfer on 28/05/2017.
@@ -18,14 +20,29 @@ public class FakeDbConnection implements DbConnection {
     List<Label> labelsInDb = new ArrayList<>();
 
     @Override
+    public void open() {
+        // not needed: do nothing
+    }
+
+    @Override
+    public void close() {
+        // not needed: do nothing
+    }
+
+    @Override
     public void store(List<LabeledTransaction> transactions) {
-        System.out.println("Storing " + transactions);
         storedTransactions.addAll(transactions);
     }
 
     @Override
     public List<Label> getAllLabels() {
         return labelsInDb;
+    }
+
+    @Override
+    public List<TransactionType> getAllTransactionTypes() {
+        // not needed
+        return emptyList();
     }
 
     public void contains(List<LabeledTransaction> transactions) throws InterruptedException {
@@ -41,10 +58,6 @@ public class FakeDbConnection implements DbConnection {
                     "\nExpected: " + transactions +
                     "\nActual:" + storedTransactions);
         }
-    }
-
-    public void stop() {
-
     }
 
     public void has(Label label) {

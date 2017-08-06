@@ -1,12 +1,12 @@
 package com.embosfer.quidmate.integration;
 
-import com.embosfer.quidmate.core.model.TransactionType;
-import org.jooq.Record;
-import org.jooq.Result;
+import com.embosfer.quidmate.core.model.*;
 import org.junit.Test;
 
-import static com.embosfer.quidmate.jooq.quidmate.tables.Transactiontype.TRANSACTIONTYPE;
-import static java.util.stream.Collectors.toList;
+import java.time.LocalDate;
+
+import static com.embosfer.quidmate.core.model.TransactionType.CARD_PAYMENT;
+import static java.util.Arrays.asList;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -17,14 +17,28 @@ public class DbIntegrationTest extends DbTestSupport {
 
     @Test
     public void containsAllRequiredTransactionTypes() {
-        Result<Record> dbRecords = execute.select().from(TRANSACTIONTYPE).fetch();
 
-        //TODO: create a matcher instead
-        TransactionType[] actualTransactionTypes = dbRecords.stream()
-                .map(record -> TransactionType.fromDB(record))
-                .collect(toList()).toArray(new TransactionType[TransactionType.values().length]);
+        TransactionType[] dbTransactionTypes = getAllTransactionTypes()
+                                                    .toArray(new TransactionType[TransactionType.values().length]);
+        assertThat(dbTransactionTypes, equalTo(TransactionType.values()));
+    }
 
-        assertThat(actualTransactionTypes, equalTo(TransactionType.values()));
+    @Test
+    public void canStoreALabeledTransaction() {
+        Transaction transaction = Transaction.of(LocalDate.of(2017, 7, 27),
+                CARD_PAYMENT,
+                Description.of("TEST CARD PAYMENT TO SKY"),
+                DebitCredit.of(-30.00),
+                Balance.of(970.00));
+
+        Label billsLabel = Label.of(1, null, null, "SKY", "EDF");
+        Label internetLabel = Label.of(2, null, billsLabel, "SKY");
+        LabeledTransaction labeledTransaction = LabeledTransaction.of(transaction,
+                                                                        asList(billsLabel, internetLabel));
+
+        store(asList(labeledTransaction));
+
+        dbContains(labeledTransaction);
     }
 
 }

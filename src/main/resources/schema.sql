@@ -31,7 +31,7 @@ CREATE TABLE `TransactionLabelList` (
   `transaction_id` int NOT NULL,
   `label_id` int NOT NULL ,
   PRIMARY KEY (`transaction_id`, `label_id`),
-  FOREIGN KEY (transaction_id) REFERENCES Transaction(id),
+  FOREIGN KEY (transaction_id) REFERENCES Transaction(id) ON DELETE CASCADE,
   FOREIGN KEY (label_id) REFERENCES TransactionLabel(id)
 );
 

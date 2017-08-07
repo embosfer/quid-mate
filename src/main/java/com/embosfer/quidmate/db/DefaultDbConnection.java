@@ -95,7 +95,7 @@ public class DefaultDbConnection implements DbConnection {
             Label label = Label.of(labelRecord.get(TRANSACTIONLABEL.ID).intValue(),
                     Description.of(labelRecord.get(TRANSACTIONLABEL.NAME)),
                     labelsById.get(labelRecord.get(TRANSACTIONLABEL.PARENT_ID)),
-                    labelPatternTranslator.translateFromDbPatternToWords(labelRecord.get(TRANSACTIONLABEL.PATTERN)));
+                    labelPatternTranslator.translateFromDb(labelRecord.get(TRANSACTIONLABEL.PATTERN)));
             dbLabels.add(label);
             labelsById.put(label.id, label);
         }

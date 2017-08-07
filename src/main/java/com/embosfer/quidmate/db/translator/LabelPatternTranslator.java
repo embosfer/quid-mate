@@ -5,7 +5,7 @@ package com.embosfer.quidmate.db.translator;
  */
 public class LabelPatternTranslator {
 
-    public String[] translateFromDbPatternToWords(String pattern) {
+    public String[] translateFromDb(String pattern) {
 
         return pattern.split("\\|");
     }

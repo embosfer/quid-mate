@@ -77,7 +77,7 @@ public class MidataParserTest {
                 .withHeader("Date;Type;Merchant/Description;Debit/Credit;Balance;")
                 .withTransactions(transactions);
 
-        List<Transaction> actualTransactions = parser.parse(midataFile.outputFile);// TODO review this accessor (maybe add a getter instead)
+        List<Transaction> actualTransactions = parser.parse(midataFile.outputFile);
         TransactionType[] actualTypes = actualTransactions.stream().map(transaction -> transaction.type).collect(toList()).toArray(new TransactionType[TransactionType.values().length]);
 
         assertThat(actualTypes, equalTo(TransactionType.values()));

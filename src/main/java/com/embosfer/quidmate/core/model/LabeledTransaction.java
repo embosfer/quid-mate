@@ -35,7 +35,7 @@ public class LabeledTransaction {
 
     @Override
     public int hashCode() {
-        return Objects.hash(transaction, labels); // TODO look at refactoring this
+        return Objects.hash(transaction, labels);
     }
 
     @Override

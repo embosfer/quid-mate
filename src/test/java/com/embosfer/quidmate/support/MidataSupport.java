@@ -18,11 +18,11 @@ public class MidataSupport {
         public String header;
         public final String name;
         public Transaction[] transactions;
-        public File outputFile;
+        public final File outputFile;
 
         MidataFile(String name) {
             this.name = name;
-            outputFile = new File(System.getProperty("java.io.tmpdir") + this.name);
+            this.outputFile = new File(System.getProperty("java.io.tmpdir") + this.name);
             try {
                 if (!outputFile.createNewFile()) {
                     outputFile.delete();

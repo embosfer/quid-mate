@@ -19,7 +19,7 @@ import static java.util.Arrays.asList;
 /**
  * Created by embosfer on 21/05/2017.
  */
-public class QuidMateEndToEndTest extends ApplicationTest {
+public class QuidMateAcceptanceTest extends ApplicationTest {
 
 
     FakeDbConnection db = new FakeDbConnection();

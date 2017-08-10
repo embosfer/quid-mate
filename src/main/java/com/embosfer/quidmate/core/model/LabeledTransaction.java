@@ -1,7 +1,8 @@
 package com.embosfer.quidmate.core.model;
 
+import com.google.common.collect.ImmutableList;
+
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -17,7 +18,7 @@ public class LabeledTransaction {
 
     private LabeledTransaction(Transaction transaction, List<Label> labels) {
         this.transaction = transaction;
-        this.labels = new ArrayList<>(labels); // TODO add Guava for immutable lists
+        this.labels = ImmutableList.copyOf(labels);
     }
 
     public static LabeledTransaction of(Transaction transaction, List<Label> labels) {

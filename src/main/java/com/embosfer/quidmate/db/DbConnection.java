@@ -16,7 +16,7 @@ public interface DbConnection {
 
     void close() throws SQLException;
 
-    void store(List<LabeledTransaction> transactions); // TODO store labeled transactions instead
+    void store(List<LabeledTransaction> transactions);
 
     List<Label> getAllLabels();
 

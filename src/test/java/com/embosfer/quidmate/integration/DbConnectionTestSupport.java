@@ -1,5 +1,6 @@
 package com.embosfer.quidmate.integration;
 
+import com.embosfer.quidmate.core.DbConfig;
 import com.embosfer.quidmate.core.model.Label;
 import com.embosfer.quidmate.core.model.LabeledTransaction;
 import com.embosfer.quidmate.db.DefaultDbConnection;
@@ -23,12 +24,14 @@ import static com.embosfer.quidmate.jooq.quidmate.Tables.TRANSACTIONLABELLIST;
  */
 public class DbConnectionTestSupport extends DefaultDbConnection {
 
+    private final DbConfig dbConfig;
     private DSLContext execute;
     private Connection checkerConnection;
     private List<LabeledTransaction> recordedTransactions;
 
-    public DbConnectionTestSupport(LabelPatternTranslator labelPatternTranslator) {
-        super(labelPatternTranslator);
+    public DbConnectionTestSupport(DbConfig dbConfig, LabelPatternTranslator labelPatternTranslator) {
+        super(dbConfig, labelPatternTranslator);
+        this.dbConfig = dbConfig;
     }
 
     public void setUp() throws SQLException {
@@ -63,11 +66,7 @@ public class DbConnectionTestSupport extends DefaultDbConnection {
     private void openDbConnections() throws SQLException {
         this.open();
 
-        // TODO refactor the below
-        String user = "root";
-        String password = "xxxxx";
-        String url = "jdbc:mysql://localhost:3306/QuidMate";
-        checkerConnection = DriverManager.getConnection(url, user, password);
+        checkerConnection = DriverManager.getConnection(dbConfig.url, dbConfig.user, dbConfig.password);
         execute = DSL.using(checkerConnection);
     }
 

@@ -1,5 +1,6 @@
 package com.embosfer.quidmate.integration;
 
+import com.embosfer.quidmate.core.DbConfig;
 import com.embosfer.quidmate.core.model.*;
 import com.embosfer.quidmate.db.translator.LabelPatternTranslator;
 import org.junit.After;
@@ -20,7 +21,7 @@ import static org.junit.Assert.assertThat;
  */
 public class DbIntegrationTest {
 
-    private final DbConnectionTestSupport dbConnection = new DbConnectionTestSupport(new LabelPatternTranslator());
+    private final DbConnectionTestSupport dbConnection = new DbConnectionTestSupport(new DbConfig(), new LabelPatternTranslator());
 
     @Before
     public void setUp() throws SQLException {

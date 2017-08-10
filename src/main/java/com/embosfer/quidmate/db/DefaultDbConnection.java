@@ -1,5 +1,6 @@
 package com.embosfer.quidmate.db;
 
+import com.embosfer.quidmate.core.DbConfig;
 import com.embosfer.quidmate.core.model.Description;
 import com.embosfer.quidmate.core.model.Label;
 import com.embosfer.quidmate.core.model.LabeledTransaction;
@@ -35,20 +36,18 @@ public class DefaultDbConnection implements DbConnection {
 
     private final LabelPatternTranslator labelPatternTranslator;
 
+    private final DbConfig dbConfig;
     private Connection connection;
     private DSLContext execute;
 
-    public DefaultDbConnection(LabelPatternTranslator labelPatternTranslator) {
+    public DefaultDbConnection(DbConfig dbConfig, LabelPatternTranslator labelPatternTranslator) {
+        this.dbConfig = dbConfig;
         this.labelPatternTranslator = labelPatternTranslator;
     }
 
-    // TODO make it configurable
     @Override
     public void open() throws SQLException {
-        String userName = "root";
-        String password = "xxxxx";
-        String url = "jdbc:mysql://localhost:3306/QuidMate";
-        connection = DriverManager.getConnection(url, userName, password);
+        connection = DriverManager.getConnection(dbConfig.url, dbConfig.user, dbConfig.password);
         execute = DSL.using(connection);
     }
 

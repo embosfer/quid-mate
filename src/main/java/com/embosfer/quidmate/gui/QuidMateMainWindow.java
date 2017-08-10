@@ -1,5 +1,6 @@
 package com.embosfer.quidmate.gui;
 
+import com.embosfer.quidmate.core.DbConfig;
 import com.embosfer.quidmate.core.MidataFileProvider;
 import com.embosfer.quidmate.core.TransactionLabeler;
 import com.embosfer.quidmate.core.parser.MidataParser;
@@ -18,7 +19,7 @@ public class QuidMateMainWindow extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        dbConnection = new DefaultDbConnection(new LabelPatternTranslator());
+        dbConnection = new DefaultDbConnection(new DbConfig(), new LabelPatternTranslator());
         dbConnection.open();
         GuiMainPane guiMainPane = new GuiMainPane(new TransactionsTable(),
                 new MidataFileProvider(primaryStage), new MidataParser(),

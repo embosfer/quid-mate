@@ -29,8 +29,8 @@ public class TransactionLabelerTest {
 
     @Before
     public void setUp() {
-         transactionToBeLabeled = Transaction.of(null, null, Description.of("Something that doesn't match with any defined label"), null, null);
-         someTransactions = asList(transactionToBeLabeled);
+        transactionToBeLabeled = Transaction.of(null, null, Description.of("Something that doesn't match with any defined label"), null, null);
+        someTransactions = asList(transactionToBeLabeled);
     }
 
     @Test
@@ -57,7 +57,21 @@ public class TransactionLabelerTest {
         LabeledTransaction labeledTransaction = labeledTransactions.get(0);
         assertTrue(labeledTransaction.transaction == transactionToBeLabeled);
         assertThat(labeledTransaction.labels, equalTo(emptyList()));
+    }
 
+    @Test
+    public void labelsCorrectlyAChildLabelContainingSeveralMatchingWords() {
+        Label parentLabel = Label.of(1, Description.of("Parent label"), null, "OTHERLABELWORD|WORD1|WORD2");
+        Label childLabel = Label.of(2, Description.of("Child label with multiple words to find"), parentLabel, "WORD1|WORD2");
+        when(dbConnection.getAllLabels()).thenReturn(asList(parentLabel, childLabel));
+
+        Transaction t1 = Transaction.of(null, null, Description.of("blah WORD1 blah"), null, null);
+        Transaction t2 = Transaction.of(null, null, Description.of("blah WORD2 blah"), null, null);
+        List<LabeledTransaction> labeledTransactions = labeler.label(asList(t1, t2));
+
+        assertThat(labeledTransactions.size(), equalTo(2));
+        assertThat(labeledTransactions.get(0).labels, equalTo(asList(parentLabel, childLabel)));
+        assertThat(labeledTransactions.get(1).labels, equalTo(asList(parentLabel, childLabel)));
     }
 
 }

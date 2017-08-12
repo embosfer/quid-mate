@@ -91,7 +91,7 @@ public class DefaultDbConnection implements DbConnection {
         Map<Integer, Label> labelsById = new HashMap<>();
 
         for (Record labelRecord : labelRecords) {
-            Label label = Label.of(labelRecord.get(TRANSACTIONLABEL.ID).intValue(),
+            Label label = Label.of(labelRecord.get(TRANSACTIONLABEL.ID),
                     Description.of(labelRecord.get(TRANSACTIONLABEL.NAME)),
                     labelsById.get(labelRecord.get(TRANSACTIONLABEL.PARENT_ID)),
                     labelPatternTranslator.translateFromDb(labelRecord.get(TRANSACTIONLABEL.PATTERN)));
@@ -108,7 +108,7 @@ public class DefaultDbConnection implements DbConnection {
         Result<Record> dbRecords = execute.select().from(TRANSACTIONTYPE).fetch();
 
         return dbRecords.stream()
-                .map(record -> TransactionType.fromDB(record.get(TRANSACTIONTYPE.ID).intValue()))
+                .map(record -> TransactionType.fromDB(record.get(TRANSACTIONTYPE.ID)))
                 .collect(toList());
     }
 
@@ -134,15 +134,15 @@ public class DefaultDbConnection implements DbConnection {
                     .fetch();
 
             Transaction transaction = Transaction.of(tranRecord.get(TRANSACTION.DATE),
-                    TransactionType.fromDB(tranRecord.get(TRANSACTION.TYPE_ID).intValue()),
+                    TransactionType.fromDB(tranRecord.get(TRANSACTION.TYPE_ID)),
                     Description.of(tranRecord.get(TRANSACTION.DESCRIPTION)),
                     DebitCredit.of(tranRecord.get(TRANSACTION.DEBIT_CREDIT)),
                     Balance.of(tranRecord.get(TRANSACTION.BALANCE)));
 
 
             List<Label> labelList = labelRecords.stream()
-                    .map(labRecord -> Label.of(labRecord.get(TRANSACTIONLABEL.ID).intValue(), Description.of(labRecord.get(TRANSACTIONLABEL.NAME)),
-                            labels.get(labRecord.get(TRANSACTIONLABEL.PARENT_ID).intValue()), labRecord.get(TRANSACTIONLABEL.PATTERN)))
+                    .map(labRecord -> Label.of(labRecord.get(TRANSACTIONLABEL.ID), Description.of(labRecord.get(TRANSACTIONLABEL.NAME)),
+                            labels.get(labRecord.get(TRANSACTIONLABEL.PARENT_ID)), labRecord.get(TRANSACTIONLABEL.PATTERN)))
                     .collect(toList());// TODO guava immutable list
 
             labeledTransactions.add(LabeledTransaction.of(transaction, labelList));

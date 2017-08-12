@@ -1,9 +1,5 @@
 package com.embosfer.quidmate.core.model;
 
-import org.jooq.Record;
-
-import static com.embosfer.quidmate.jooq.quidmate.tables.Transactiontype.TRANSACTIONTYPE;
-
 /**
  * Created by embosfer on 28/05/2017.
  */
@@ -25,12 +21,11 @@ public enum TransactionType {
         return TransactionType.valueOf(csvValue.replaceAll("\\s", "_").replaceAll("-", ""));
     }
 
-    public static TransactionType fromDB(Record record) {
-        TransactionType result = fromCSV(record.get(TRANSACTIONTYPE.TYPE));
-        if (record.get(TRANSACTIONTYPE.ID) != result.id) {
-            throw new IllegalStateException("TransactionType Id mismatch. Got ID=" + record.get(TRANSACTIONTYPE.ID) + " from DB. Expected ID=" + result.id);
+    public static TransactionType fromDB(int dbID) { // TODO get it from the id instead
+        for (TransactionType tt : values()) {
+            if (tt.id == dbID) return tt;
         }
-        return result;
+        throw new IllegalArgumentException("No TransactionType found for DB Id " + dbID);
     }
 
     @Override

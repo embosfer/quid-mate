@@ -1,15 +1,16 @@
 package com.embosfer.quidmate.doubles;
 
-import com.embosfer.quidmate.core.model.Label;
-import com.embosfer.quidmate.core.model.LabeledTransaction;
-import com.embosfer.quidmate.core.model.TransactionType;
+import com.embosfer.quidmate.core.model.*;
 import com.embosfer.quidmate.db.DbConnection;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import static java.lang.Thread.sleep;
+import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Created by embosfer on 28/05/2017.
@@ -17,6 +18,7 @@ import static java.util.Collections.emptyList;
 public class FakeDbConnection implements DbConnection {
 
     List<LabeledTransaction> storedTransactions = new ArrayList<>();
+    List<LabeledTransaction> loadedTransactions = new ArrayList<>();
     List<Label> labelsInDb = new ArrayList<>();
 
     @Override
@@ -45,6 +47,11 @@ public class FakeDbConnection implements DbConnection {
         return emptyList();
     }
 
+    @Override
+    public List<LabeledTransaction> retrieveLastTransactions(int noTransactions) {
+        return loadedTransactions;
+    }
+
     public void contains(List<LabeledTransaction> transactions) throws InterruptedException {
         int waitingTimeInMillis = 0;
         while (waitingTimeInMillis < 1000) {
@@ -62,5 +69,12 @@ public class FakeDbConnection implements DbConnection {
 
     public void has(Label label) {
         this.labelsInDb.add(label);
+    }
+
+    public void has(Transaction transaction, String... labels) {
+        List<Label> labelList = IntStream.range(0, labels.length)
+                .mapToObj(index -> Label.of(index, Description.of(labels[index]), null, labels[index]))
+                .collect(toList());
+        loadedTransactions.addAll(asList(LabeledTransaction.of(transaction, labelList)));
     }
 }

@@ -1,10 +1,7 @@
 package com.embosfer.quidmate.db;
 
 import com.embosfer.quidmate.core.DbConfig;
-import com.embosfer.quidmate.core.model.Description;
-import com.embosfer.quidmate.core.model.Label;
-import com.embosfer.quidmate.core.model.LabeledTransaction;
-import com.embosfer.quidmate.core.model.TransactionType;
+import com.embosfer.quidmate.core.model.*;
 import com.embosfer.quidmate.db.translator.LabelPatternTranslator;
 import com.embosfer.quidmate.jooq.quidmate.tables.records.TransactionRecord;
 import org.jooq.DSLContext;
@@ -25,6 +22,7 @@ import java.util.Map;
 import static com.embosfer.quidmate.jooq.quidmate.Tables.*;
 import static com.embosfer.quidmate.jooq.quidmate.tables.Transactiontype.TRANSACTIONTYPE;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.reverse;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -59,6 +57,8 @@ public class DefaultDbConnection implements DbConnection {
 
     @Override
     public void store(List<LabeledTransaction> transactions) {
+
+        reverse(transactions); // we want to store them in date ascending order
 
         for (LabeledTransaction lt : transactions) {
             TransactionRecord transactionRecord = execute.insertInto(TRANSACTION)
@@ -108,7 +108,46 @@ public class DefaultDbConnection implements DbConnection {
         Result<Record> dbRecords = execute.select().from(TRANSACTIONTYPE).fetch();
 
         return dbRecords.stream()
-                .map(record -> TransactionType.fromDB(record))
+                .map(record -> TransactionType.fromDB(record.get(TRANSACTIONTYPE.ID).intValue()))
                 .collect(toList());
+    }
+
+    @Override
+    public List<LabeledTransaction> retrieveLastTransactions(int noTransactions) {
+        Result<Record> transactionRecords = execute
+                .select()
+                .from(TRANSACTION)
+                .orderBy(TRANSACTION.ID.desc())
+                .limit(noTransactions)
+                .fetch();
+
+        List<LabeledTransaction> labeledTransactions = new ArrayList<>(transactionRecords.size());
+
+        Map<Integer, Label> labels = new HashMap<>();
+        for (Record tranRecord : transactionRecords) {
+
+            Result<Record> labelRecords = execute
+                    .select(TRANSACTIONLABEL.fields())
+                    .from(TRANSACTIONLABELLIST, TRANSACTIONLABEL)
+                    .where(TRANSACTIONLABELLIST.TRANSACTION_ID.eq(tranRecord.get(TRANSACTION.ID)))
+                    .and(TRANSACTIONLABELLIST.LABEL_ID.eq(TRANSACTIONLABEL.ID))
+                    .fetch();
+
+            Transaction transaction = Transaction.of(tranRecord.get(TRANSACTION.DATE),
+                    TransactionType.fromDB(tranRecord.get(TRANSACTION.TYPE_ID).intValue()),
+                    Description.of(tranRecord.get(TRANSACTION.DESCRIPTION)),
+                    DebitCredit.of(tranRecord.get(TRANSACTION.DEBIT_CREDIT)),
+                    Balance.of(tranRecord.get(TRANSACTION.BALANCE)));
+
+
+            List<Label> labelList = labelRecords.stream()
+                    .map(labRecord -> Label.of(labRecord.get(TRANSACTIONLABEL.ID).intValue(), Description.of(labRecord.get(TRANSACTIONLABEL.NAME)),
+                            labels.get(labRecord.get(TRANSACTIONLABEL.PARENT_ID).intValue()), labRecord.get(TRANSACTIONLABEL.PATTERN)))
+                    .collect(toList());// TODO guava immutable list
+
+            labeledTransactions.add(LabeledTransaction.of(transaction, labelList));
+        }
+
+        return labeledTransactions;
     }
 }

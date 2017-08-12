@@ -21,4 +21,6 @@ public interface DbConnection {
     List<Label> getAllLabels();
 
     List<TransactionType> getAllTransactionTypes();
+
+    List<LabeledTransaction> retrieveLastTransactions(int noTransactions);
 }

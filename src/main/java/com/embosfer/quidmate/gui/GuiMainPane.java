@@ -30,6 +30,9 @@ public class GuiMainPane extends VBox {
         Label label = new Label();
         label.setId("numberOfTransactionsLoaded");
 
+        List<LabeledTransaction> lastTransactions = dbConnection.retrieveLastTransactions(20);// TODO separate thread...
+        transactionsTable.add(lastTransactions);
+
         button.setOnAction(event -> {
             Optional<File> optionalFile = midataFileProvider.getFile();
             optionalFile.ifPresent(file -> {

@@ -61,8 +61,8 @@ public class TransactionLabelerTest {
 
     @Test
     public void labelsCorrectlyAChildLabelContainingSeveralMatchingWords() {
-        Label parentLabel = Label.of(1, Description.of("Parent label"), null, "OTHERLABELWORD|WORD1|WORD2");
-        Label childLabel = Label.of(2, Description.of("Child label with multiple words to find"), parentLabel, "WORD1|WORD2");
+        Label parentLabel = Label.of(1, Description.of("Parent label"), null, "OTHERLABELWORD", "WORD1", "WORD2");
+        Label childLabel = Label.of(2, Description.of("Child label with multiple words to find"), parentLabel, "WORD1", "WORD2");
         when(dbConnection.getAllLabels()).thenReturn(asList(parentLabel, childLabel));
 
         Transaction t1 = Transaction.of(null, null, Description.of("blah WORD1 blah"), null, null);

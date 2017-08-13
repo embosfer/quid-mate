@@ -3,6 +3,7 @@ package com.embosfer.quidmate.core.model;
 import com.google.common.collect.ImmutableList;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -32,4 +33,26 @@ public class Label {
         return new Label(id, description, parentLabel, wordsToFind);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if (!(obj instanceof Label)) return false;
+        Label otherLabel = (Label) obj;
+
+        return this.id == otherLabel.id
+                && Objects.equals(this.description, otherLabel.description)
+                && Objects.equals(this.wordsToFind, otherLabel.wordsToFind)
+                && Objects.equals(this.patternToFind, otherLabel.parentLabel)
+                && Objects.equals(this.parentLabel, otherLabel.parentLabel);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, description, wordsToFind, patternToFind, parentLabel);
+    }
+
+    @Override
+    public String toString() {
+        return "[Id: " + id + ", Description: " + description + ", WordsToFind: " + wordsToFind + ", pattern: " + patternToFind + ", parentLabel: " + parentLabel + "]";
+    }
 }

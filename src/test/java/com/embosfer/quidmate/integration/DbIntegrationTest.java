@@ -10,8 +10,10 @@ import org.junit.Test;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.List;
 
-import static com.embosfer.quidmate.core.model.TransactionType.CARD_PAYMENT;
+import static com.embosfer.quidmate.core.model.TransactionType.*;
+import static java.time.LocalDate.now;
 import static java.util.Arrays.asList;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
@@ -61,9 +63,34 @@ public class DbIntegrationTest {
 
     @Ignore
     @Test
-    public void retrievesAllAvailableLabels() {
+    public void canRetrieveLastTransactions() {
+        // TODO make sure required Labels are created by DbConnectionTestSupport
 
-//        List<Label> allLabels = getAllLabels();
+        LocalDate now = now();
+        Transaction transaction1 = Transaction.of(now, CARD_PAYMENT, Description.of("t1"), DebitCredit.of(-1), Balance.of(1));
+        Label labelT1 = Label.of(1, null, null, "lt1");
+        LabeledTransaction labTransaction1 = LabeledTransaction.of(transaction1, asList(labelT1));
+
+        Transaction transaction2 = Transaction.of(now.minusDays(1), PAYMENTS, Description.of("t2"), DebitCredit.of(2), Balance.of(3));
+        Label labelT2 = Label.of(2, null, null, "lt2");
+        LabeledTransaction labTransaction2 = LabeledTransaction.of(transaction2, asList(labelT2));
+
+        Transaction transaction3 = Transaction.of(now.minusDays(2), FAST_PAYMENT, Description.of("t3"), DebitCredit.of(3), Balance.of(6));
+        Label labelT3 = Label.of(3, null, null, "lt3");
+        LabeledTransaction labTransaction3 = LabeledTransaction.of(transaction3, asList(labelT3));
+
+        dbConnection.store(asList(labTransaction1, labTransaction2, labTransaction3));
+
+        List<LabeledTransaction> lastTransactions = dbConnection.retrieveLastTransactions(2);
+        assertThat(lastTransactions.size(), equalTo(2));
+        assertThat(lastTransactions.get(0), equalTo(labTransaction1));
+        assertThat(lastTransactions.get(1), equalTo(labTransaction2));
+    }
+
+    @Ignore
+    @Test
+    public void retrievesAllAvailableLabels() {
+        List<Label> allLabels = dbConnection.getAllLabels();
 
     }
 

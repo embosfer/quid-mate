@@ -7,7 +7,11 @@ import com.embosfer.quidmate.core.parser.MidataParser;
 import com.embosfer.quidmate.db.DefaultDbConnection;
 import com.embosfer.quidmate.db.translator.LabelPatternTranslator;
 import javafx.application.Application;
+import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.TabPane;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 /**
@@ -21,14 +25,23 @@ public class QuidMateMainWindow extends Application {
     public void start(Stage primaryStage) throws Exception {
         dbConnection = new DefaultDbConnection(new DbConfig(), new LabelPatternTranslator());
         dbConnection.open();
-        GuiMainPane guiMainPane = new GuiMainPane(new TransactionsTable(),
+
+        BorderPane mainPane = new BorderPane();
+        TabPane tabPane = new TabPane();
+        mainPane.setCenter(tabPane);
+
+        TransactionsTab transactionsTab = new TransactionsTab(new TransactionsTable(),
                 new MidataFileProvider(primaryStage), new MidataParser(),
                 new TransactionLabeler(dbConnection), dbConnection);
+        tabPane.getTabs().add(transactionsTab);
 
-        Scene myScene = new Scene(guiMainPane);
-        primaryStage.setScene(myScene);
-        primaryStage.setWidth(1300);
-        primaryStage.setHeight(1000);
+        Group root = new Group();
+        Scene scene = new Scene(root, 1300, 1000, Color.WHITE);
+        mainPane.prefHeightProperty().bind(scene.heightProperty());
+        mainPane.prefWidthProperty().bind(scene.widthProperty());
+        root.getChildren().add(mainPane);
+
+        primaryStage.setScene(scene);
         primaryStage.show();
     }
 

@@ -9,6 +9,7 @@ import com.embosfer.quidmate.core.parser.MidataParser;
 import com.embosfer.quidmate.db.DbConnection;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tab;
 import javafx.scene.layout.VBox;
 
 import java.io.File;
@@ -18,22 +19,22 @@ import java.util.Optional;
 /**
  * Created by embosfer on 23/07/2017.
  */
-public class GuiMainPane extends VBox {
+public class TransactionsTab extends Tab {
 
-    public GuiMainPane(TransactionsTable transactionsTable,
-                       MidataFileProvider midataFileProvider, MidataParser midataParser,
-                       TransactionLabeler transactionLabeler,
-                       DbConnection dbConnection) {
+    public TransactionsTab(TransactionsTable transactionsTable,
+                           MidataFileProvider midataFileProvider, MidataParser midataParser,
+                           TransactionLabeler transactionLabeler,
+                           DbConnection dbConnection) {
 
-        Button button = new Button("Upload midata file");
-        button.setId("uploadMidataFileBtn");
-        Label label = new Label();
-        label.setId("numberOfTransactionsLoaded");
+        Button btnUploadMidataFile = new Button("Upload midata file");
+        btnUploadMidataFile.setId("btnUploadMidataFile");
+        Label lblNoTransactionsLoaded = new Label();
+        lblNoTransactionsLoaded.setId("lblNoTransactionsLoaded");
 
         List<LabeledTransaction> lastTransactions = dbConnection.retrieveLastTransactions(20);// TODO separate thread...
         transactionsTable.add(lastTransactions);
 
-        button.setOnAction(event -> {
+        btnUploadMidataFile.setOnAction(event -> {
             Optional<File> optionalFile = midataFileProvider.getFile();
             optionalFile.ifPresent(file -> {
                 try {
@@ -41,14 +42,17 @@ public class GuiMainPane extends VBox {
                     List<LabeledTransaction> labeledTransactions = transactionLabeler.label(transactions);
                     dbConnection.store(labeledTransactions);
                     transactionsTable.add(labeledTransactions);
-                    label.setText(labeledTransactions.size() + " transactions were loaded.");
+                    lblNoTransactionsLoaded.setText(labeledTransactions.size() + " transactions were loaded.");
                 } catch (UnknownFileFormatException e) {
                     // TODO: show popup error
                 }
             });
         });
 
-        getChildren().addAll(button, label, transactionsTable);
+        VBox vBox = new VBox();
+        vBox.getChildren().addAll(btnUploadMidataFile, lblNoTransactionsLoaded, transactionsTable);
+        setContent(vBox);
+        setText("Transactions");
     }
 
 }

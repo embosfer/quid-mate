@@ -5,10 +5,14 @@ import com.embosfer.quidmate.core.TransactionLabeler;
 import com.embosfer.quidmate.core.model.Transaction;
 import com.embosfer.quidmate.core.parser.MidataParser;
 import com.embosfer.quidmate.db.DbConnection;
-import com.embosfer.quidmate.gui.GuiMainPane;
+import com.embosfer.quidmate.gui.TransactionsTab;
 import com.embosfer.quidmate.gui.TransactionsTable;
+import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.TabPane;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
@@ -34,16 +38,28 @@ public class QuidMateRunner extends ApplicationTest {
 
     @Override
     public void start(Stage stage) throws Exception {
-        GuiMainPane guiMainPane = new GuiMainPane(new TransactionsTable(), midataFileProvider, new MidataParser(), new TransactionLabeler(db), db);
+        // TODO refactor this so we can test tabs individually
+        BorderPane mainPane = new BorderPane();
+        TabPane tabPane = new TabPane();
+        mainPane.setCenter(tabPane);
 
-        stage.setScene(new Scene(guiMainPane, 1300, 500));
+        TransactionsTab transactionsTab = new TransactionsTab(new TransactionsTable(), midataFileProvider, new MidataParser(), new TransactionLabeler(db), db);
+        tabPane.getTabs().add(transactionsTab);
+
+        Group root = new Group();
+        Scene scene = new Scene(root, 1300, 1000, Color.WHITE);
+        mainPane.prefHeightProperty().bind(scene.heightProperty());
+        mainPane.prefWidthProperty().bind(scene.widthProperty());
+        root.getChildren().add(mainPane);
+
+        stage.setScene(scene);
         stage.show();
     }
 
 
     public void loadsMidataFile(MidataSupport.MidataFile file) {
         when(this.midataFileProvider.getFile()).thenReturn(Optional.of(file.outputFile));
-        clickOn("#uploadMidataFileBtn").press(KeyCode.DOWN).press(KeyCode.ENTER);
+        clickOn("#btnUploadMidataFile").press(KeyCode.DOWN).press(KeyCode.ENTER);
     }
 
     public void showsLabeledTransaction(Transaction transaction, String labels) {
@@ -51,7 +67,7 @@ public class QuidMateRunner extends ApplicationTest {
     }
 
     public void showsTransactionsWereLoaded(int noTransactions) {
-        verifyThat("#numberOfTransactionsLoaded", LabeledMatchers.hasText(noTransactions + " transactions were loaded."));
+        verifyThat("#lblNoTransactionsLoaded", LabeledMatchers.hasText(noTransactions + " transactions were loaded."));
     }
 
     public void showsTotalExpenses(double totalExpenses) {

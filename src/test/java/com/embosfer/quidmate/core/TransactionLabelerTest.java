@@ -70,6 +70,7 @@ public class TransactionLabelerTest {
         List<LabeledTransaction> labeledTransactions = labeler.label(asList(t1, t2));
 
         assertThat(labeledTransactions.size(), equalTo(2));
+        // TODO LocalDate gets loaded from DB (jooq) with a day less! a
         assertThat(labeledTransactions.get(0).labels, equalTo(asList(parentLabel, childLabel)));
         assertThat(labeledTransactions.get(1).labels, equalTo(asList(parentLabel, childLabel)));
     }

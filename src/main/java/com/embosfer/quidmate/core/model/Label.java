@@ -55,4 +55,17 @@ public class Label {
     public String toString() {
         return "[Id: " + id + ", Description: " + description + ", WordsToFind: " + wordsToFind + ", pattern: " + patternToFind + ", parentLabel: " + parentLabel + "]";
     }
+
+    // For Java FX
+    public Description getDescription() {
+        return description;
+    }
+
+    public List<String> getWordsToFind() {
+        return wordsToFind;
+    }
+
+    public Description getParentLabelDescription() {
+        return parentLabel.map(parentLabel -> parentLabel.description).orElse(null);
+    }
 }

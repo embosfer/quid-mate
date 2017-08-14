@@ -10,11 +10,15 @@ import com.embosfer.quidmate.db.DbConnection;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import java.io.File;
 import java.util.List;
 import java.util.Optional;
+
+import static com.embosfer.quidmate.gui.GuiUtils.quidMateBorder;
 
 /**
  * Created by embosfer on 23/07/2017.
@@ -49,9 +53,19 @@ public class TransactionsTab extends Tab {
             });
         });
 
-        VBox vBox = new VBox();
-        vBox.getChildren().addAll(btnUploadMidataFile, lblNoTransactionsLoaded, transactionsTable);
-        setContent(vBox);
+        BorderPane borderPaneTransactions = new BorderPane();
+        borderPaneTransactions.setBorder(quidMateBorder());
+        borderPaneTransactions.setTop(lblNoTransactionsLoaded);
+        borderPaneTransactions.setCenter(transactionsTable);
+
+        VBox vBoxButtons = new VBox();
+        vBoxButtons.setBorder(quidMateBorder());
+        vBoxButtons.getChildren().addAll(btnUploadMidataFile);
+
+        HBox hBox = new HBox();
+        hBox.getChildren().addAll(vBoxButtons, borderPaneTransactions);
+
+        setContent(hBox);
         setText("Transactions");
     }
 

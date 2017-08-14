@@ -33,10 +33,11 @@ public class QuidMateMainWindow extends Application {
         TransactionsTab transactionsTab = new TransactionsTab(new TransactionsTable(),
                 new MidataFileProvider(primaryStage), new MidataParser(),
                 new TransactionLabeler(dbConnection), dbConnection);
-        tabPane.getTabs().add(transactionsTab);
+        LabelsTab labelsTab = new LabelsTab(dbConnection);
+        tabPane.getTabs().addAll(transactionsTab, labelsTab);
 
         Group root = new Group();
-        Scene scene = new Scene(root, 1300, 1000, Color.WHITE);
+        Scene scene = new Scene(root, 1700, 1000, Color.WHITE);
         mainPane.prefHeightProperty().bind(scene.heightProperty());
         mainPane.prefWidthProperty().bind(scene.widthProperty());
         root.getChildren().add(mainPane);

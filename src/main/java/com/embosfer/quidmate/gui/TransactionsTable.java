@@ -22,6 +22,7 @@ public class TransactionsTable extends TableView<LabeledTransaction> {
         setId("LoadedTransactions");
         getColumns().addAll(dateColumn(), typeColumn(), descriptionColumn(), debitCreditColumn(), balanceColumn(), labelsColumn());
     }
+
     private TableColumn<LabeledTransaction, LocalDate> dateColumn() {
         TableColumn<LabeledTransaction, LocalDate> dateColumn = new TableColumn<>("Date");
         dateColumn.setPrefWidth(100);
@@ -59,7 +60,7 @@ public class TransactionsTable extends TableView<LabeledTransaction> {
 
     private TableColumn<LabeledTransaction, Balance> labelsColumn() {
         TableColumn<LabeledTransaction, Balance> labelsColumn = new TableColumn<>("Labels");
-        labelsColumn.setPrefWidth(100);
+        labelsColumn.setPrefWidth(300);
         labelsColumn.setCellValueFactory(new PropertyValueFactory<>("labels"));
         return labelsColumn;
     }

@@ -16,7 +16,7 @@ public class LabelsTab extends Tab {
 
     public LabelsTab(DbConnection dbConnection) {
         Button btnCreateLabel = new Button("Create Label");
-        btnCreateLabel.setId("#btnCreateLabel");
+        btnCreateLabel.setId("btnCreateLabel");
 
         btnCreateLabel.setOnAction(event -> {
 
@@ -28,12 +28,15 @@ public class LabelsTab extends Tab {
 
         BorderPane borderPaneLabelTree = new BorderPane();
         borderPaneLabelTree.setBorder(quidMateBorder());
-        LabelsTreeTableView labelsTreeTableView = new LabelsTreeTableView(dbConnection.getAllLabels());
+        LabelsTreeTableView labelsTreeTableView = new LabelsTreeTableView(dbConnection);
         borderPaneLabelTree.setCenter(labelsTreeTableView);
 
         HBox hBox = new HBox();
         hBox.getChildren().addAll(vBoxButtons, borderPaneLabelTree);
+
+        setOnSelectionChanged(event -> labelsTreeTableView.onTabClicked());
         setContent(hBox);
         setText("Labels");
+        setId("labelsTab");
     }
 }

@@ -19,7 +19,7 @@ import static java.util.stream.Collectors.toCollection;
 public class TransactionsTable extends TableView<LabeledTransaction> {
 
     public TransactionsTable() {
-        setId("LoadedTransactions");
+        setId("loadedTransactions");
         getColumns().addAll(dateColumn(), typeColumn(), descriptionColumn(), debitCreditColumn(), balanceColumn(), labelsColumn());
     }
 

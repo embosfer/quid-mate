@@ -2,6 +2,7 @@ package com.embosfer.quidmate.gui;
 
 import com.embosfer.quidmate.core.model.Description;
 import com.embosfer.quidmate.core.model.Label;
+import com.embosfer.quidmate.db.DbConnection;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
@@ -16,13 +17,23 @@ import java.util.Map;
  */
 public class LabelsTreeTableView extends TreeTableView<Label> {
 
-    public LabelsTreeTableView(List<Label> labels) {
-        setId("LoadedLabels");
+    private final DbConnection dbConnection;
+    private boolean initialised = false;
+
+    public LabelsTreeTableView(DbConnection dbConnection) {
+        this.dbConnection = dbConnection;
+
+        setId("loadedLabels");
         setShowRoot(false);
 
         getColumns().addAll(descriptionColumn(), wordsToFindColumn(), parentLabelDescriptionColumn());
+    }
 
-        buildLabelTreeFrom(labels);
+    public void onTabClicked() {
+        if (!initialised) { // TODO separate thread...
+            buildLabelTreeFrom(dbConnection.getAllLabels());
+            initialised = true;
+        }
     }
 
     private void buildLabelTreeFrom(List<Label> labels) {

@@ -2,6 +2,7 @@ package com.embosfer.quidmate.support;
 
 import com.embosfer.quidmate.core.MidataFileProvider;
 import com.embosfer.quidmate.core.TransactionLabeler;
+import com.embosfer.quidmate.core.model.Label;
 import com.embosfer.quidmate.core.model.Transaction;
 import com.embosfer.quidmate.core.parser.MidataParser;
 import com.embosfer.quidmate.db.DbConnection;
@@ -50,11 +51,15 @@ public class QuidMateRunner extends ApplicationTest {
     }
 
     public void showsLabeledTransaction(Transaction transaction, String labels) {
-        verifyThat("#LoadedTransactions", containsRow(transaction.date, transaction.type, transaction.description, transaction.debitCredit, transaction.balance, labels));
+        verifyThat("#loadedTransactions", containsRow(transaction.date, transaction.type, transaction.description, transaction.debitCredit, transaction.balance, labels));
     }
 
     public void showsTransactionsWereLoaded(int noTransactions) {
         verifyThat("#lblNoTransactionsLoaded", LabeledMatchers.hasText(noTransactions + " transactions were loaded."));
+    }
+
+    public void showsLabel(Label label) {
+        verifyThat("#loadedLabels", containsRow(label.description, label.wordsToFind, label.parentLabel.map(lab -> lab.description).orElse(null)));
     }
 
     public void showsTotalExpenses(double totalExpenses) {
@@ -64,4 +69,7 @@ public class QuidMateRunner extends ApplicationTest {
 //        driver.dispose();
     }
 
+    public void goesToLabelTab() {
+        clickOn("#labelsTab");
+    }
 }

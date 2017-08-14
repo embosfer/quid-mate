@@ -21,7 +21,6 @@ import static java.util.Arrays.asList;
  */
 public class QuidMateAcceptanceTest extends ApplicationTest {
 
-
     FakeDbConnection db = new FakeDbConnection();
     QuidMateRunner gui = new QuidMateRunner(db);
 
@@ -55,6 +54,20 @@ public class QuidMateAcceptanceTest extends ApplicationTest {
         gui.showsLabeledTransaction(electricityTransaction, "Bills Electricity");
         gui.showsLabeledTransaction(gasTransaction, "Bills Gas");
         gui.showsTransactionsWereLoaded(2);
+    }
+
+    @Ignore("TODO: TestFX doesn't provide support for TreeTableView :(")
+    @Test
+    public void loadsLabelsFromDbAndShowsThemOnLabelsTab() {
+        Label billsParentLabel = Label.of(1, Description.of("Bills"),null, "EDF", "E\\.ON");
+        Label electricityLabel = Label.of(2, Description.of("Electricity"), billsParentLabel, "EDF");
+        Label gasLabel = Label.of(3, Description.of("Gas"), billsParentLabel,"E.ON");
+        db.has(billsParentLabel);
+        db.has(electricityLabel);
+        db.has(gasLabel);
+
+        gui.goesToLabelTab();
+        gui.showsLabel(billsParentLabel);
     }
 
     // TODO: test with a non expected file pops an error message

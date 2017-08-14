@@ -5,14 +5,12 @@ import com.embosfer.quidmate.core.TransactionLabeler;
 import com.embosfer.quidmate.core.model.Transaction;
 import com.embosfer.quidmate.core.parser.MidataParser;
 import com.embosfer.quidmate.db.DbConnection;
+import com.embosfer.quidmate.gui.LabelsTab;
+import com.embosfer.quidmate.gui.MainScene;
 import com.embosfer.quidmate.gui.TransactionsTab;
 import com.embosfer.quidmate.gui.TransactionsTable;
 import javafx.scene.Group;
-import javafx.scene.Scene;
-import javafx.scene.control.TabPane;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
@@ -37,23 +35,12 @@ public class QuidMateRunner extends ApplicationTest {
     }
 
     @Override
-    public void start(Stage stage) throws Exception {
-        // TODO refactor this so we can test tabs individually
-        BorderPane mainPane = new BorderPane();
-        TabPane tabPane = new TabPane();
-        mainPane.setCenter(tabPane);
-
+    public void start(Stage primaryStage) throws Exception {
         TransactionsTab transactionsTab = new TransactionsTab(new TransactionsTable(), midataFileProvider, new MidataParser(), new TransactionLabeler(db), db);
-        tabPane.getTabs().add(transactionsTab);
+        LabelsTab labelsTab = new LabelsTab(db);
 
-        Group root = new Group();
-        Scene scene = new Scene(root, 1300, 1000, Color.WHITE);
-        mainPane.prefHeightProperty().bind(scene.heightProperty());
-        mainPane.prefWidthProperty().bind(scene.widthProperty());
-        root.getChildren().add(mainPane);
-
-        stage.setScene(scene);
-        stage.show();
+        primaryStage.setScene(new MainScene(new Group(), transactionsTab, labelsTab));
+        primaryStage.show();
     }
 
 

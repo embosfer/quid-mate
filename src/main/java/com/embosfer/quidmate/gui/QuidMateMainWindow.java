@@ -8,10 +8,6 @@ import com.embosfer.quidmate.db.DefaultDbConnection;
 import com.embosfer.quidmate.db.translator.LabelPatternTranslator;
 import javafx.application.Application;
 import javafx.scene.Group;
-import javafx.scene.Scene;
-import javafx.scene.control.TabPane;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 /**
@@ -26,23 +22,12 @@ public class QuidMateMainWindow extends Application {
         dbConnection = new DefaultDbConnection(new DbConfig(), new LabelPatternTranslator());
         dbConnection.open();
 
-        BorderPane mainPane = new BorderPane();
-        TabPane tabPane = new TabPane();
-        mainPane.setCenter(tabPane);
-
         TransactionsTab transactionsTab = new TransactionsTab(new TransactionsTable(),
                 new MidataFileProvider(primaryStage), new MidataParser(),
                 new TransactionLabeler(dbConnection), dbConnection);
         LabelsTab labelsTab = new LabelsTab(dbConnection);
-        tabPane.getTabs().addAll(transactionsTab, labelsTab);
 
-        Group root = new Group();
-        Scene scene = new Scene(root, 1700, 1000, Color.WHITE);
-        mainPane.prefHeightProperty().bind(scene.heightProperty());
-        mainPane.prefWidthProperty().bind(scene.widthProperty());
-        root.getChildren().add(mainPane);
-
-        primaryStage.setScene(scene);
+        primaryStage.setScene(new MainScene(new Group(), transactionsTab, labelsTab));
         primaryStage.show();
     }
 

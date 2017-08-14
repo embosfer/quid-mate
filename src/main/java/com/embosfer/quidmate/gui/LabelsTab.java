@@ -1,6 +1,6 @@
 package com.embosfer.quidmate.gui;
 
-import com.embosfer.quidmate.db.DefaultDbConnection;
+import com.embosfer.quidmate.db.DbConnection;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tab;
 import javafx.scene.layout.BorderPane;
@@ -14,7 +14,7 @@ import static com.embosfer.quidmate.gui.GuiUtils.quidMateBorder;
  */
 public class LabelsTab extends Tab {
 
-    public LabelsTab(DefaultDbConnection dbConnection) {
+    public LabelsTab(DbConnection dbConnection) {
         Button btnCreateLabel = new Button("Create Label");
         btnCreateLabel.setId("#btnCreateLabel");
 

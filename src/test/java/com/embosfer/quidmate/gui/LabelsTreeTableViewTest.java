@@ -21,4 +21,16 @@ public class LabelsTreeTableViewTest {
 
         verify(dbConnection, times(1)).getAllLabels();
     }
+
+    @Test
+    public void labelsGetLoadedFromDbOnlyOnce() {
+        LabelsTreeTableView labelsTreeTableView = new LabelsTreeTableView(dbConnection);
+
+        labelsTreeTableView.onTabClicked();
+        labelsTreeTableView.onTabClicked();
+        labelsTreeTableView.onTabClicked();
+
+        verify(dbConnection, times(1)).getAllLabels();
+    }
+
 }

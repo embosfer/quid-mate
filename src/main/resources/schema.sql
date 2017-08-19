@@ -12,7 +12,7 @@ CREATE TABLE `TransactionLabel` (
   `id` int NOT NULL AUTO_INCREMENT,
   `parent_id` int,
   `name` varchar(30) NOT NULL,
-  `pattern` varchar(250) NOT NULL,
+  `pattern` varchar(250),
   PRIMARY KEY (`id`)
 );
 
@@ -51,5 +51,6 @@ INSERT INTO TransactionType (type) VALUES ('INTEREST');
 INSERT INTO TransactionType (type) VALUES ('MONTHLY_ACCOUNT_FEE');
 INSERT INTO TransactionType (type) VALUES ('NON-STERLING_PURCHASE_FEE');
 INSERT INTO TransactionType (type) VALUES ('PAYMENTS');
-INSERT INTO TransactionLabel VALUES (1, null, 'Bills', 'SKY|EDF|E\\.ON');
+INSERT INTO TransactionLabel VALUES (1, null, 'Bills', null);
 INSERT INTO TransactionLabel VALUES (2, 1, 'Electricity', 'EDF');
+INSERT INTO TransactionLabel VALUES (3, 1, 'Internet', 'VIRGIN');

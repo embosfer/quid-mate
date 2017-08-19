@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.joining;
 
 /**
@@ -17,15 +17,15 @@ public class Label {
 
     public final Description description;
     public final List<String> wordsToFind;
-    public final Pattern patternToFind;
+    public final Optional<Pattern> patternToFind;
     public final Optional<Label> parentLabel;
     public final int id;
 
     private Label(int id, Description description, Label parentLabel, String... wordsToFind) {
         this.id = id;
         this.description = description;
-        this.wordsToFind = ImmutableList.copyOf(wordsToFind);
-        this.patternToFind = Pattern.compile(Stream.of(wordsToFind).collect(joining("|")));
+        this.wordsToFind = wordsToFind == null ? emptyList() : ImmutableList.copyOf(wordsToFind);
+        this.patternToFind = Optional.ofNullable(wordsToFind == null ? null : Pattern.compile(this.wordsToFind.stream().collect(joining("|"))));
         this.parentLabel = Optional.ofNullable(parentLabel);
     }
 

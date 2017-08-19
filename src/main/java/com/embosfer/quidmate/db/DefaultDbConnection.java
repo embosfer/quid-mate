@@ -91,10 +91,11 @@ public class DefaultDbConnection implements DbConnection {
         Map<Integer, Label> labelsById = new HashMap<>();
 
         for (Record labelRecord : labelRecords) {
+            String pattern = labelRecord.get(TRANSACTIONLABEL.PATTERN);
             Label label = Label.of(labelRecord.get(TRANSACTIONLABEL.ID),
                     Description.of(labelRecord.get(TRANSACTIONLABEL.NAME)),
                     labelsById.get(labelRecord.get(TRANSACTIONLABEL.PARENT_ID)),
-                    labelPatternTranslator.translateFromDb(labelRecord.get(TRANSACTIONLABEL.PATTERN)));
+                    pattern == null ? null : labelPatternTranslator.translateFromDb(pattern));
             dbLabels.add(label);
             labelsById.put(label.id, label);
         }

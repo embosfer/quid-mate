@@ -39,10 +39,15 @@ public class TransactionLabeler {
     private List<Label> getLabelsThatMatchedFor(Transaction transaction) {
         List<Label> matchedLabels = new ArrayList<>();
         for (Label label : labels) {
-            if (label.patternToFind.matcher(transaction.description.value).find()) {
-                matchedLabels.add(label);
-            }
+            label.patternToFind.ifPresent(pattern -> {
+                if (pattern.matcher(transaction.description.value).find()) {
+                    matchedLabels.add(label);
+                    label.parentLabel.ifPresent(parentLabel -> matchedLabels.add(parentLabel));
+                }
+            });
+
         }
         return (matchedLabels.size() > 0 ? matchedLabels : emptyList());
     }
+
 }

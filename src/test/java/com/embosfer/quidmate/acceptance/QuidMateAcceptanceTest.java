@@ -31,9 +31,9 @@ public class QuidMateAcceptanceTest extends ApplicationTest {
 
     @Test
     public void uploadingMidataFileShowsLabeledTransactionsOnGUI() throws Exception {
-        Label billsParentLabel = Label.of(1, Description.of("Bills"),null, "EDF", "E\\.ON");
+        Label billsParentLabel = Label.of(1, Description.of("Bills"),null, null);
         Label electricityLabel = Label.of(2, Description.of("Electricity"), billsParentLabel, "EDF");
-        Label gasLabel = Label.of(3, Description.of("Gas"), billsParentLabel,"E.ON");
+        Label gasLabel = Label.of(3, Description.of("Gas"), billsParentLabel,"E\\.ON");
         db.has(billsParentLabel);
         db.has(electricityLabel);
         db.has(gasLabel);
@@ -48,20 +48,21 @@ public class QuidMateAcceptanceTest extends ApplicationTest {
                 .withTransactions(electricityTransaction, gasTransaction));
 
         db.contains(asList(
-                LabeledTransaction.of(electricityTransaction, asList(billsParentLabel, electricityLabel)),
-                LabeledTransaction.of(gasTransaction, asList(billsParentLabel, gasLabel))));
+                LabeledTransaction.of(electricityTransaction, asList(electricityLabel, billsParentLabel)),
+                LabeledTransaction.of(gasTransaction, asList(gasLabel,
+                        billsParentLabel))));
 
-        gui.showsLabeledTransaction(electricityTransaction, "Bills Electricity");
-        gui.showsLabeledTransaction(gasTransaction, "Bills Gas");
+        gui.showsLabeledTransaction(electricityTransaction, "Electricity Bills");
+        gui.showsLabeledTransaction(gasTransaction, "Gas Bills");
         gui.showsTransactionsWereLoaded(2);
     }
 
     @Ignore("TODO: TestFX doesn't provide support for TreeTableView :(")
     @Test
     public void loadsLabelsFromDbAndShowsThemOnLabelsTab() {
-        Label billsParentLabel = Label.of(1, Description.of("Bills"),null, "EDF", "E\\.ON");
+        Label billsParentLabel = Label.of(1, Description.of("Bills"),null, null);
         Label electricityLabel = Label.of(2, Description.of("Electricity"), billsParentLabel, "EDF");
-        Label gasLabel = Label.of(3, Description.of("Gas"), billsParentLabel,"E.ON");
+        Label gasLabel = Label.of(3, Description.of("Gas"), billsParentLabel,"E\\.ON");
         db.has(billsParentLabel);
         db.has(electricityLabel);
         db.has(gasLabel);

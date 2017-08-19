@@ -51,7 +51,7 @@ public class DbIntegrationTest {
                 DebitCredit.of(-30.00),
                 Balance.of(970.00));
 
-        Label billsLabel = Label.of(1, null, null, "SKY", "EDF");
+        Label billsLabel = Label.of(1, null, null, null);
         Label internetLabel = Label.of(2, null, billsLabel, "SKY");
         LabeledTransaction labeledTransaction = LabeledTransaction.of(transaction,
                                                                         asList(billsLabel, internetLabel));

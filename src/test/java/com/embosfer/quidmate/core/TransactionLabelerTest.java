@@ -60,8 +60,23 @@ public class TransactionLabelerTest {
     }
 
     @Test
+    public void labelsCorrectlyAParentLabelContainingSeveralMatchingWords() {
+        Label parentLabel = Label.of(1, Description.of("Parent label"), null, "WORD1", "WORD2");
+        when(dbConnection.getAllLabels()).thenReturn(asList(parentLabel));
+
+        Transaction t1 = Transaction.of(null, null, Description.of("blah WORD1 blah"), null, null);
+        Transaction t2 = Transaction.of(null, null, Description.of("blah WORD2 blah"), null, null);
+        List<LabeledTransaction> labeledTransactions = labeler.label(asList(t1, t2));
+
+        assertThat(labeledTransactions.size(), equalTo(2));
+        // TODO LocalDate gets loaded from DB (jooq) with a day less! a
+        assertThat(labeledTransactions.get(0).labels, equalTo(asList(parentLabel)));
+        assertThat(labeledTransactions.get(1).labels, equalTo(asList(parentLabel)));
+    }
+
+    @Test
     public void labelsCorrectlyAChildLabelContainingSeveralMatchingWords() {
-        Label parentLabel = Label.of(1, Description.of("Parent label"), null, "OTHERLABELWORD", "WORD1", "WORD2");
+        Label parentLabel = Label.of(1, Description.of("Parent label"), null, null);
         Label childLabel = Label.of(2, Description.of("Child label with multiple words to find"), parentLabel, "WORD1", "WORD2");
         when(dbConnection.getAllLabels()).thenReturn(asList(parentLabel, childLabel));
 
@@ -71,8 +86,8 @@ public class TransactionLabelerTest {
 
         assertThat(labeledTransactions.size(), equalTo(2));
         // TODO LocalDate gets loaded from DB (jooq) with a day less! a
-        assertThat(labeledTransactions.get(0).labels, equalTo(asList(parentLabel, childLabel)));
-        assertThat(labeledTransactions.get(1).labels, equalTo(asList(parentLabel, childLabel)));
+        assertThat(labeledTransactions.get(0).labels, equalTo(asList(childLabel, parentLabel)));
+        assertThat(labeledTransactions.get(1).labels, equalTo(asList(childLabel, parentLabel)));
     }
 
 }

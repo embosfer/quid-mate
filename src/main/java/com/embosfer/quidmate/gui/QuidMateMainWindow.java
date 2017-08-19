@@ -2,6 +2,7 @@ package com.embosfer.quidmate.gui;
 
 import com.embosfer.quidmate.core.DbConfig;
 import com.embosfer.quidmate.core.MidataFileProvider;
+import com.embosfer.quidmate.core.PieChartDataCreator;
 import com.embosfer.quidmate.core.TransactionLabeler;
 import com.embosfer.quidmate.core.parser.MidataParser;
 import com.embosfer.quidmate.db.DefaultDbConnection;
@@ -22,7 +23,7 @@ public class QuidMateMainWindow extends Application {
         dbConnection = new DefaultDbConnection(new DbConfig(), new LabelPatternTranslator());
         dbConnection.open();
 
-        TransactionsTab transactionsTab = new TransactionsTab(new TransactionsTable(),
+        TransactionsTab transactionsTab = new TransactionsTab(new PieChartDataCreator(), new TransactionsTable(),
                 new MidataFileProvider(primaryStage), new MidataParser(),
                 new TransactionLabeler(dbConnection), dbConnection);
         LabelsTab labelsTab = new LabelsTab(dbConnection);

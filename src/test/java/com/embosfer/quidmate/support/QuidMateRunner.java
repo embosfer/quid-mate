@@ -1,6 +1,7 @@
 package com.embosfer.quidmate.support;
 
 import com.embosfer.quidmate.core.MidataFileProvider;
+import com.embosfer.quidmate.core.PieChartDataCreator;
 import com.embosfer.quidmate.core.TransactionLabeler;
 import com.embosfer.quidmate.core.model.Label;
 import com.embosfer.quidmate.core.model.Transaction;
@@ -37,7 +38,7 @@ public class QuidMateRunner extends ApplicationTest {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        TransactionsTab transactionsTab = new TransactionsTab(new TransactionsTable(), midataFileProvider, new MidataParser(), new TransactionLabeler(db), db);
+        TransactionsTab transactionsTab = new TransactionsTab(new PieChartDataCreator(), new TransactionsTable(), midataFileProvider, new MidataParser(), new TransactionLabeler(db), db);
         LabelsTab labelsTab = new LabelsTab(db);
 
         primaryStage.setScene(new MainScene(new Group(), transactionsTab, labelsTab));
@@ -60,9 +61,6 @@ public class QuidMateRunner extends ApplicationTest {
 
     public void showsLabel(Label label) {
         verifyThat("#loadedLabels", containsRow(label.description, label.wordsToFind, label.parentLabel.map(lab -> lab.description).orElse(null)));
-    }
-
-    public void showsTotalExpenses(double totalExpenses) {
     }
 
     public void stop() {

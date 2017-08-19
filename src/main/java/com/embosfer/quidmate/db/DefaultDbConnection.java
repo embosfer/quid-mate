@@ -142,8 +142,15 @@ public class DefaultDbConnection implements DbConnection {
 
 
             List<Label> labelList = labelRecords.stream()
-                    .map(labRecord -> Label.of(labRecord.get(TRANSACTIONLABEL.ID), Description.of(labRecord.get(TRANSACTIONLABEL.NAME)),
-                            labels.get(labRecord.get(TRANSACTIONLABEL.PARENT_ID)), labRecord.get(TRANSACTIONLABEL.PATTERN)))
+                    .map(labRecord -> {
+                                String wordsToFind = labRecord.get(TRANSACTIONLABEL.PATTERN);
+
+                                return Label.of(labRecord.get(TRANSACTIONLABEL.ID),
+                                        Description.of(labRecord.get(TRANSACTIONLABEL.NAME)),
+                                        labels.get(labRecord.get(TRANSACTIONLABEL.PARENT_ID)),
+                                        wordsToFind == null ? "" : wordsToFind);
+                            }
+                    )
                     .collect(toList());// TODO guava immutable list
 
             labeledTransactions.add(LabeledTransaction.of(transaction, labelList));

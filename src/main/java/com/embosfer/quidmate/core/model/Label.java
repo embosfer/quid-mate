@@ -24,7 +24,7 @@ public class Label {
     private Label(int id, Description description, Label parentLabel, String... wordsToFind) {
         this.id = id;
         this.description = description;
-        this.wordsToFind = wordsToFind == null ? emptyList() : ImmutableList.copyOf(wordsToFind);
+        this.wordsToFind = wordsToFind == null || wordsToFind.length == 0 ? emptyList() : ImmutableList.copyOf(wordsToFind);
         this.patternToFind = Optional.ofNullable(wordsToFind == null ? null : Pattern.compile(this.wordsToFind.stream().collect(joining("|"))));
         this.parentLabel = Optional.ofNullable(parentLabel);
     }

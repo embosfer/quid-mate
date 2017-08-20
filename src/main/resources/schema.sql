@@ -51,6 +51,7 @@ INSERT INTO TransactionType (type) VALUES ('INTEREST');
 INSERT INTO TransactionType (type) VALUES ('MONTHLY_ACCOUNT_FEE');
 INSERT INTO TransactionType (type) VALUES ('NON-STERLING_PURCHASE_FEE');
 INSERT INTO TransactionType (type) VALUES ('PAYMENTS');
+INSERT INTO TransactionType (type) VALUES ('PURCHASE_IN_BRANCHES_-PCAS');
 INSERT INTO TransactionLabel VALUES (1, null, 'Bills', null);
 INSERT INTO TransactionLabel VALUES (2, 1, 'Electricity', 'EDF');
 INSERT INTO TransactionLabel VALUES (3, 1, 'Internet', 'VIRGIN');

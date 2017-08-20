@@ -70,7 +70,8 @@ public class MidataParserTest {
                 Transaction.of(now, INTEREST, someDescription, someValue, otherValue),
                 Transaction.of(now, MONTHLY_ACCOUNT_FEE, someDescription, someValue, otherValue),
                 Transaction.of(now, NONSTERLING_PURCHASE_FEE, someDescription, someValue, otherValue),
-                Transaction.of(now, PAYMENTS, someDescription, someValue, otherValue)
+                Transaction.of(now, PAYMENTS, someDescription, someValue, otherValue),
+                Transaction.of(now, PURCHASE_IN_BRANCHES_PCAS, someDescription, someValue, otherValue)
         };
 
         MidataFile midataFile = file(midataFilename)

@@ -24,7 +24,6 @@ import javafx.scene.paint.Color;
 import java.util.List;
 
 import static com.embosfer.quidmate.gui.GuiUtils.quidMateBorder;
-import static javafx.geometry.Side.RIGHT;
 
 /**
  * Created by embosfer on 23/07/2017.
@@ -45,7 +44,7 @@ public class TransactionsTab extends Tab {
         transactionsTable.add(lastTransactions);
 
         PieChart pieChart = new PieChart();
-        pieChart.setLegendSide(RIGHT);
+        pieChart.setLegendVisible(false);
         pieChart.setLabelLineLength(10);
         final javafx.scene.control.Label percentagesCaption = new javafx.scene.control.Label();
         percentagesCaption.setVisible(false);
@@ -70,30 +69,27 @@ public class TransactionsTab extends Tab {
                 })
         );
 
-
-        VBox vBoxButtons = new VBox();
+        HBox vBoxButtons = new HBox();
         vBoxButtons.setBorder(quidMateBorder());
         vBoxButtons.getChildren().addAll(btnUploadMidataFile);
+        HBox.setHgrow(vBoxButtons, Priority.ALWAYS);
 
         BorderPane borderPaneTransactions = new BorderPane();
         borderPaneTransactions.setBorder(quidMateBorder());
         borderPaneTransactions.setTop(lblNoTransactionsLoaded);
         borderPaneTransactions.setCenter(transactionsTable);
-
-        VBox vBoxPieAndTransactions = new VBox();
-        vBoxPieAndTransactions.setBorder(quidMateBorder());
         VBox.setVgrow(borderPaneTransactions, Priority.ALWAYS);
 
         Group pieChartGroup = new Group();
-        HBox box = new HBox();
+        VBox box = new VBox();
         pieChartGroup.getChildren().add(box);
         box.getChildren().addAll(pieChart, percentagesCaption);
-        HBox.setHgrow(pieChart, Priority.ALWAYS);
 
+        VBox vBoxPieAndTransactions = new VBox();
+        vBoxPieAndTransactions.setBorder(quidMateBorder());
         vBoxPieAndTransactions.getChildren().addAll(pieChartGroup, borderPaneTransactions);
 
         HBox hBox = new HBox();
-        HBox.setHgrow(vBoxButtons, Priority.ALWAYS);
         hBox.getChildren().addAll(vBoxButtons, vBoxPieAndTransactions);
 
         setContent(hBox);

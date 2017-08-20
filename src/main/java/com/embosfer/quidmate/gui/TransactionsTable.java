@@ -3,9 +3,11 @@ package com.embosfer.quidmate.gui;
 import com.embosfer.quidmate.core.model.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.paint.Color;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -48,6 +50,21 @@ public class TransactionsTable extends TableView<LabeledTransaction> {
         TableColumn<LabeledTransaction, DebitCredit> debitCreditColumn = new TableColumn<>("Debit/Credit");
         debitCreditColumn.setPrefWidth(100);
         debitCreditColumn.setCellValueFactory(new PropertyValueFactory<>("debitCredit"));
+        debitCreditColumn.setCellFactory(tableColumn ->
+                new TableCell<LabeledTransaction, DebitCredit>() {
+                    @Override
+                    protected void updateItem(DebitCredit item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (!empty) {
+                            if (item.value >= 0) {
+                                this.setTextFill(Color.FORESTGREEN);
+                            } else {
+                                this.setTextFill(Color.DARKRED);
+                            }
+                            setText(item.toString());
+                        }
+                    }
+                });
         return debitCreditColumn;
     }
 

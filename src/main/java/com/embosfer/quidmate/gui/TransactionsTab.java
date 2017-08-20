@@ -91,7 +91,6 @@ public class TransactionsTab extends Tab {
 
         HBox hBox = new HBox();
         hBox.getChildren().addAll(vBoxButtons, vBoxPieAndTransactions);
-
         setContent(hBox);
 
         setText("Transactions");

@@ -11,7 +11,9 @@ import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+
+import static java.lang.Math.abs;
+import static java.util.stream.Collectors.toCollection;
 
 /**
  * Created by embosfer on 16/08/2017.
@@ -27,24 +29,34 @@ public class PieChartDataCreator {
     }
 
 
-    public ObservableList<PieChart.Data> createPieChartDataFor(List<LabeledTransaction> labeledTransactions) {
+    public ObservableList<PieChart.Data> createExpensesPieChartDataFor(List<LabeledTransaction> labeledTransactions) {
 
-        Map<String, Double> countByLabel = new HashMap<>(); // TODO review if I can do this a bit more clean
+        Map<String, Double> totalAmountsByLabel = new HashMap<>(); // TODO review if I can do this via streams (group by label)
         for (LabeledTransaction labeledTransaction : labeledTransactions) {
-            if (labeledTransaction.labels.isEmpty()) {
-                countByLabel.compute("Unknown", (k, v) -> v == null ? 1 : v + 1);
-            } else {
+
+            double debitCredit = labeledTransaction.getDebitCredit().value;
+            if (debitCredit > 0) continue;
+
+            String labelDesc = "Unknown";
+            if (!labeledTransaction.labels.isEmpty()) {
                 for (Label label : labeledTransaction.labels) {
-                    if (!label.parentLabel.isPresent()) {
-                        countByLabel.compute(label.description.value, (k, v) -> v == null ? 1 : v + 1);
+                    if (!label.parentLabel.isPresent()) { // calculate only the first level labels
+                        labelDesc = label.description.value;
+                        break;
                     }
                 }
             }
+            totalAmountsByLabel.compute(labelDesc, (k, v) -> v == null ? debitCredit : v + debitCredit);
         }
 
-        return countByLabel.entrySet().stream()
-                .map(entry -> new PieChart.Data(entry.getKey(), formatToTwoDecimalPlaces((entry.getValue() * 100) / labeledTransactions.size())))
-                .collect(Collectors.toCollection(FXCollections::observableArrayList));
+        double totalAmount = labeledTransactions.stream()
+                .filter(tran -> tran.getDebitCredit().value < 0)
+                .mapToDouble(tran -> tran.getDebitCredit().value)
+                .sum();
+
+        return totalAmountsByLabel.entrySet().stream()
+                .map(entry -> new PieChart.Data(entry.getKey(), abs(formatToTwoDecimalPlaces((entry.getValue() * 100) / totalAmount))))
+                .collect(toCollection(FXCollections::observableArrayList));
     }
 
     private double formatToTwoDecimalPlaces(double value) {

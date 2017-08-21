@@ -45,7 +45,7 @@ public class TransactionsTab extends Tab {
 
         PieChart pieChart = new PieChart();
         pieChart.setLegendVisible(false);
-        pieChart.setLabelLineLength(10);
+        pieChart.setLabelLineLength(30);
         final javafx.scene.control.Label percentagesCaption = new javafx.scene.control.Label();
         percentagesCaption.setVisible(false);
         percentagesCaption.setTextFill(Color.DARKORANGE);
@@ -60,7 +60,7 @@ public class TransactionsTab extends Tab {
                         transactionsTable.add(labeledTransactions);
                         lblNoTransactionsLoaded.setText(labeledTransactions.size() + " transactions were loaded.");
 
-                        pieChart.setData(pieChartDataMuncher.createPieChartDataFor(labeledTransactions));
+                        pieChart.setData(pieChartDataMuncher.createExpensesPieChartDataFor(labeledTransactions));
                         setPercentageCaptionOn(pieChart, percentagesCaption);
 
                     } catch (UnknownFileFormatException e) {

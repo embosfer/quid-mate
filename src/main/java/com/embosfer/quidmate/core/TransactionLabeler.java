@@ -24,7 +24,7 @@ public class TransactionLabeler {
 
     public List<LabeledTransaction> label(List<Transaction> transactions) {
         if (labels == null) {
-            labels = dbConnection.getAllLabels();
+            labels = dbConnection.getAllLabels(); //TODO: maybe a Set instead...
         }
 
         List<LabeledTransaction> labeledTransactions = new ArrayList<>(transactions.size());

@@ -21,6 +21,7 @@ import java.util.Map;
 
 import static com.embosfer.quidmate.jooq.quidmate.Tables.*;
 import static com.embosfer.quidmate.jooq.quidmate.tables.Transactiontype.TRANSACTIONTYPE;
+import static com.google.common.collect.ImmutableList.toImmutableList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.reverse;
 import static java.util.stream.Collectors.toList;
@@ -84,7 +85,8 @@ public class DefaultDbConnection implements DbConnection {
 
     @Override
     public List<Label> getAllLabels() {
-
+        // TODO: order them by levels: the leaf labels first, which will contain the pointers to their parents...
+        // TODO: this is so TransactionLabeler can label more efficiently
         Result<Record> labelRecords = execute.select().from(TRANSACTIONLABEL).fetch();
 
         List<Label> dbLabels = new ArrayList<>();
@@ -125,33 +127,32 @@ public class DefaultDbConnection implements DbConnection {
         List<LabeledTransaction> labeledTransactions = new ArrayList<>(transactionRecords.size());
 
         Map<Integer, Label> labels = new HashMap<>();
-        for (Record tranRecord : transactionRecords) {
+        for (Record tranDbRecord : transactionRecords) {
 
-            Result<Record> labelRecords = execute
+            Result<Record> transactionLabelRecords = execute
                     .select(TRANSACTIONLABEL.fields())
                     .from(TRANSACTIONLABELLIST, TRANSACTIONLABEL)
-                    .where(TRANSACTIONLABELLIST.TRANSACTION_ID.eq(tranRecord.get(TRANSACTION.ID)))
+                    .where(TRANSACTIONLABELLIST.TRANSACTION_ID.eq(tranDbRecord.get(TRANSACTION.ID)))
                     .and(TRANSACTIONLABELLIST.LABEL_ID.eq(TRANSACTIONLABEL.ID))
                     .fetch();
 
-            Transaction transaction = Transaction.of(tranRecord.get(TRANSACTION.DATE),
-                    TransactionType.fromDB(tranRecord.get(TRANSACTION.TYPE_ID)),
-                    Description.of(tranRecord.get(TRANSACTION.DESCRIPTION)),
-                    DebitCredit.of(tranRecord.get(TRANSACTION.DEBIT_CREDIT)),
-                    Balance.of(tranRecord.get(TRANSACTION.BALANCE)));
+            Transaction transaction = Transaction.of(tranDbRecord.get(TRANSACTION.DATE),
+                    TransactionType.fromDB(tranDbRecord.get(TRANSACTION.TYPE_ID)),
+                    Description.of(tranDbRecord.get(TRANSACTION.DESCRIPTION)),
+                    DebitCredit.of(tranDbRecord.get(TRANSACTION.DEBIT_CREDIT)),
+                    Balance.of(tranDbRecord.get(TRANSACTION.BALANCE)));
 
+            List<Label> labelList = transactionLabelRecords.stream()
+                    .map(labDbRecord -> {
+                                String wordsToFind = labDbRecord.get(TRANSACTIONLABEL.PATTERN);
 
-            List<Label> labelList = labelRecords.stream()
-                    .map(labRecord -> {
-                                String wordsToFind = labRecord.get(TRANSACTIONLABEL.PATTERN);
-
-                                return Label.of(labRecord.get(TRANSACTIONLABEL.ID),
-                                        Description.of(labRecord.get(TRANSACTIONLABEL.NAME)),
-                                        labels.get(labRecord.get(TRANSACTIONLABEL.PARENT_ID)),
+                                return Label.of(labDbRecord.get(TRANSACTIONLABEL.ID),
+                                        Description.of(labDbRecord.get(TRANSACTIONLABEL.NAME)),
+                                        labels.get(labDbRecord.get(TRANSACTIONLABEL.PARENT_ID)),
                                         wordsToFind == null ? "" : wordsToFind);
                             }
                     )
-                    .collect(toList());// TODO guava immutable list
+                    .collect(toImmutableList());
 
             labeledTransactions.add(LabeledTransaction.of(transaction, labelList));
         }

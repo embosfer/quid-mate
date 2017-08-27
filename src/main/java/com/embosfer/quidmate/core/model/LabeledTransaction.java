@@ -28,8 +28,6 @@ public class LabeledTransaction {
         if (!(obj instanceof LabeledTransaction)) return false;
         LabeledTransaction otherTran = (LabeledTransaction) obj;
 
-        System.out.println(this.leafLabel + " " + otherTran.leafLabel);
-        System.out.println(this.rootLabel + " " + otherTran.rootLabel);
         return this.transaction.equals(otherTran.transaction)
                 && Objects.equals(leafLabel, otherTran.leafLabel)
                 && Objects.equals(rootLabel, otherTran.rootLabel);

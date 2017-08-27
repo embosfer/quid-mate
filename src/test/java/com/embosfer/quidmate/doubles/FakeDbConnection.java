@@ -5,12 +5,10 @@ import com.embosfer.quidmate.db.DbConnection;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.IntStream;
+import java.util.Optional;
 
 import static java.lang.Thread.sleep;
-import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
-import static java.util.stream.Collectors.toList;
 
 /**
  * Created by embosfer on 28/05/2017.
@@ -34,6 +32,11 @@ public class FakeDbConnection implements DbConnection {
     @Override
     public void store(List<LabeledTransaction> transactions) {
         storedTransactions.addAll(transactions);
+    }
+
+    @Override
+    public void store(Label label) {
+        throw new RuntimeException("Forgot to impl.");
     }
 
     @Override
@@ -67,14 +70,12 @@ public class FakeDbConnection implements DbConnection {
         }
     }
 
-    public void has(Label label) {
+    public void hasLoaded(Label label) {
         this.labelsInDb.add(label);
     }
 
-    public void has(Transaction transaction, String... labels) {
-        List<Label> labelList = IntStream.range(0, labels.length)
-                .mapToObj(index -> Label.of(index, Description.of(labels[index]), null, labels[index]))
-                .collect(toList());
-        loadedTransactions.addAll(asList(LabeledTransaction.of(transaction, labelList)));
+    public void hasLoaded(Transaction transaction, String leafLabel) {
+        Label label = Label.of(0, Description.of(leafLabel), null, leafLabel != null ? new String[]{leafLabel} : null);
+        loadedTransactions.add(LabeledTransaction.of(transaction, Optional.of(label)));
     }
 }

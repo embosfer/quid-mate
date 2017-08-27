@@ -1,12 +1,8 @@
 package com.embosfer.quidmate.core.model;
 
-import com.google.common.collect.ImmutableList;
-
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Objects;
-
-import static java.util.stream.Collectors.joining;
+import java.util.Optional;
 
 /**
  * Created by embosfer on 31/07/2017.
@@ -14,15 +10,17 @@ import static java.util.stream.Collectors.joining;
 public class LabeledTransaction {
 
     public final Transaction transaction;
-    public final List<Label> labels;
+    public final Optional<Label> leafLabel;
+    public final Optional<Label> rootLabel;
 
-    private LabeledTransaction(Transaction transaction, List<Label> labels) {
+    private LabeledTransaction(Transaction transaction, Optional<Label> leafLabel) {
         this.transaction = transaction;
-        this.labels = ImmutableList.copyOf(labels);
+        this.leafLabel = leafLabel;
+        this.rootLabel = getRootLabelFrom(this.leafLabel);
     }
 
-    public static LabeledTransaction of(Transaction transaction, List<Label> labels) {
-        return new LabeledTransaction(transaction, labels);
+    public static LabeledTransaction of(Transaction transaction, Optional<Label> leafLabel) {
+        return new LabeledTransaction(transaction, leafLabel);
     }
 
     @Override
@@ -30,18 +28,22 @@ public class LabeledTransaction {
         if (!(obj instanceof LabeledTransaction)) return false;
         LabeledTransaction otherTran = (LabeledTransaction) obj;
 
-        return this.transaction.equals(otherTran.transaction) && Objects.equals(labels, otherTran.labels);
+        System.out.println(this.leafLabel + " " + otherTran.leafLabel);
+        System.out.println(this.rootLabel + " " + otherTran.rootLabel);
+        return this.transaction.equals(otherTran.transaction)
+                && Objects.equals(leafLabel, otherTran.leafLabel)
+                && Objects.equals(rootLabel, otherTran.rootLabel);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(transaction, labels);
+        return Objects.hash(transaction, leafLabel, rootLabel);
     }
 
     @Override
-    public String toString() {
+    public String toString() { // TODO refactor this toString with the Transaction one?
         return "[" + transaction.date + ", " + transaction.type + ", Description: " + transaction.description
-                + ", Debit/Credit: " + transaction.debitCredit + ", Balance: " + transaction.balance + ", Labels: " + labels + "]"; // TODO refactor this?
+                + ", Debit/Credit: " + transaction.debitCredit + ", Balance: " + transaction.balance + ", Labels: " + getLabels() + "]";
     }
 
     // These getters are created so JavaFX columns can be retrieved via reflection...
@@ -66,9 +68,17 @@ public class LabeledTransaction {
     }
 
     public String getLabels() {
-        return labels.stream()
-                .map(label -> label.description.value)
-                .collect(joining(" "));
+        return this.leafLabel.map(label -> label.description.value).orElse("");
+    }
+
+    private Optional<Label> getRootLabelFrom(Optional<Label> leafLabel) {
+        Optional<Label> rootLabel = leafLabel;
+        Optional<Label> currLabel = leafLabel;
+        while (currLabel.isPresent()) {
+            rootLabel = currLabel;
+            currLabel = currLabel.get().parentLabel;
+        }
+        return rootLabel;
     }
 
 }

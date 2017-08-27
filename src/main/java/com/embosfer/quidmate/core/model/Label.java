@@ -42,7 +42,8 @@ public class Label {
         return this.id == otherLabel.id
                 && Objects.equals(this.description, otherLabel.description)
                 && Objects.equals(this.wordsToFind, otherLabel.wordsToFind)
-                && Objects.equals(this.patternToFind, otherLabel.parentLabel)
+                // Pattern doesn't impl. equals...
+                && Objects.equals(this.patternToFind.map(Pattern::toString).orElse(null), otherLabel.patternToFind.map(Pattern::toString).orElse(null))
                 && Objects.equals(this.parentLabel, otherLabel.parentLabel);
     }
 

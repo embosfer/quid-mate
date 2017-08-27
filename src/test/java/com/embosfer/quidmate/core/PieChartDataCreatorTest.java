@@ -6,9 +6,9 @@ import javafx.scene.chart.PieChart;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -26,17 +26,13 @@ public class PieChartDataCreatorTest {
         Label travelLabel = Label.of(0, Description.of("Travel"), null, null);
 
         LabeledTransaction t1 = LabeledTransaction.of(
-                Transaction.of(null, null, null, DebitCredit.of(-50.0), null),
-                asList(billsLabel, electricity));
+                Transaction.of(null, null, null, DebitCredit.of(-50.0), null), Optional.of(electricity));
         LabeledTransaction t2 = LabeledTransaction.of(
-                Transaction.of(null, null, null, DebitCredit.of(-350.0), null),
-                asList(travelLabel));
+                Transaction.of(null, null, null, DebitCredit.of(-350.0), null), Optional.of(travelLabel));
         LabeledTransaction t3 = LabeledTransaction.of(
-                Transaction.of(null, null, null, DebitCredit.of(-100.0), null),
-                emptyList());
+                Transaction.of(null, null, null, DebitCredit.of(-100.0), null), Optional.empty());
         LabeledTransaction t4 = LabeledTransaction.of(
-                Transaction.of(null, null, null, DebitCredit.of(1000.0), null),
-                emptyList());
+                Transaction.of(null, null, null, DebitCredit.of(1000.0), null), Optional.empty());
 
         List<LabeledTransaction> transactions = asList(t1, t2, t3, t4);
         ObservableList<PieChart.Data> pieChartData = creator.createExpensesPieChartDataFor(transactions);

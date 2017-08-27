@@ -51,8 +51,8 @@ public class QuidMateRunner extends ApplicationTest {
         clickOn("#btnUploadMidataFile").press(KeyCode.DOWN).press(KeyCode.ENTER);
     }
 
-    public void showsLabeledTransaction(Transaction transaction, String labels) {
-        verifyThat("#loadedTransactions", containsRow(transaction.date, transaction.type, transaction.description, transaction.debitCredit, transaction.balance, labels));
+    public void showsLabeledTransaction(Transaction transaction, String leafLabel) {
+        verifyThat("#loadedTransactions", containsRow(transaction.date, transaction.type, transaction.description, transaction.debitCredit, transaction.balance, leafLabel));
     }
 
     public void showsTransactionsWereLoaded(int noTransactions) {

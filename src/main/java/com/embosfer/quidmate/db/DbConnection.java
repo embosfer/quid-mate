@@ -18,6 +18,8 @@ public interface DbConnection {
 
     void store(List<LabeledTransaction> transactions);
 
+    void store(Label label);
+
     List<Label> getAllLabels();
 
     List<TransactionType> getAllTransactionTypes();

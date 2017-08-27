@@ -11,6 +11,7 @@ import org.junit.Test;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import static com.embosfer.quidmate.core.model.TransactionType.*;
 import static java.time.LocalDate.now;
@@ -44,17 +45,32 @@ public class DbIntegrationTest {
     }
 
     @Test
-    public void canStoreALabeledTransaction() {
+    public void canStoreALabeledTransactionWithOneSingleLabelHierarchy() {
         Transaction transaction = Transaction.of(LocalDate.of(2017, 7, 27),
                 CARD_PAYMENT,
-                Description.of("TEST CARD PAYMENT TO SKY"),
+                Description.of("SIMPLELABELTRANSACTION"),
+                DebitCredit.of(3.00),
+                Balance.of(100.00));
+
+        Label oneLabel = Label.of(1, null, null, "SIMPLELABELTRANSACTION");
+        LabeledTransaction labeledTransaction = LabeledTransaction.of(transaction, Optional.of(oneLabel));
+
+        dbConnection.store(asList(labeledTransaction));
+
+        dbConnection.dbContains(labeledTransaction);
+    }
+
+    @Test
+    public void canStoreALabeledTransactionWithMultipleLabelHierarchy() {
+        Transaction transaction = Transaction.of(LocalDate.of(2017, 7, 27),
+                CARD_PAYMENT,
+                Description.of("HIERARCHYLABELTRANSACTION"),
                 DebitCredit.of(-30.00),
                 Balance.of(970.00));
 
         Label billsLabel = Label.of(1, null, null, null);
-        Label internetLabel = Label.of(2, null, billsLabel, "SKY");
-        LabeledTransaction labeledTransaction = LabeledTransaction.of(transaction,
-                                                                        asList(billsLabel, internetLabel));
+        Label internetLabel = Label.of(2, null, billsLabel, "HIERARCHYLABELTRANSACTION");
+        LabeledTransaction labeledTransaction = LabeledTransaction.of(transaction, Optional.of(internetLabel));
 
         dbConnection.store(asList(labeledTransaction));
 
@@ -65,19 +81,20 @@ public class DbIntegrationTest {
     @Test
     public void canRetrieveLastTransactions() {
         // TODO make sure required Labels are created by DbConnectionTestSupport
+        Label labelT1 = Label.of(1001, Description.of("label1"), null, "w1");
+        Label labelT2 = Label.of(1002, Description.of("label2"), null, "w2");
+        Label labelT3 = Label.of(1003, Description.of("label3"), null, "w3");
+        dbConnection.has(labelT1, labelT2, labelT3);
 
         LocalDate now = now();
-        Transaction transaction1 = Transaction.of(now, CARD_PAYMENT, Description.of("t1"), DebitCredit.of(-1), Balance.of(1));
-        Label labelT1 = Label.of(1, null, null, "lt1");
-        LabeledTransaction labTransaction1 = LabeledTransaction.of(transaction1, asList(labelT1));
+        Transaction transaction1 = Transaction.of(now, CARD_PAYMENT, Description.of("w1"), DebitCredit.of(-1), Balance.of(1));
+        LabeledTransaction labTransaction1 = LabeledTransaction.of(transaction1, Optional.of(labelT1));
 
-        Transaction transaction2 = Transaction.of(now.minusDays(1), PAYMENTS, Description.of("t2"), DebitCredit.of(2), Balance.of(3));
-        Label labelT2 = Label.of(2, null, null, "lt2");
-        LabeledTransaction labTransaction2 = LabeledTransaction.of(transaction2, asList(labelT2));
+        Transaction transaction2 = Transaction.of(now.minusDays(1), PAYMENTS, Description.of("w2"), DebitCredit.of(2), Balance.of(3));
+        LabeledTransaction labTransaction2 = LabeledTransaction.of(transaction2, Optional.of(labelT2));
 
-        Transaction transaction3 = Transaction.of(now.minusDays(2), FAST_PAYMENT, Description.of("t3"), DebitCredit.of(3), Balance.of(6));
-        Label labelT3 = Label.of(3, null, null, "lt3");
-        LabeledTransaction labTransaction3 = LabeledTransaction.of(transaction3, asList(labelT3));
+        Transaction transaction3 = Transaction.of(now.minusDays(2), FAST_PAYMENT, Description.of("w3"), DebitCredit.of(3), Balance.of(6));
+        LabeledTransaction labTransaction3 = LabeledTransaction.of(transaction3, Optional.of(labelT3));
 
         dbConnection.store(asList(labTransaction1, labTransaction2, labTransaction3));
 

@@ -1,6 +1,5 @@
 package com.embosfer.quidmate.core;
 
-import com.embosfer.quidmate.core.model.Label;
 import com.embosfer.quidmate.core.model.LabeledTransaction;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -37,15 +36,7 @@ public class PieChartDataCreator {
             double debitCredit = labeledTransaction.getDebitCredit().value;
             if (debitCredit > 0) continue;
 
-            String labelDesc = "Unknown";
-            if (!labeledTransaction.labels.isEmpty()) {
-                for (Label label : labeledTransaction.labels) {
-                    if (!label.parentLabel.isPresent()) { // calculate only the first level labels
-                        labelDesc = label.description.value;
-                        break;
-                    }
-                }
-            }
+            String labelDesc = labeledTransaction.rootLabel.isPresent() ? labeledTransaction.rootLabel.get().description.value : "Unknown";
             totalAmountsByLabel.compute(labelDesc, (k, v) -> v == null ? debitCredit : v + debitCredit);
         }
 

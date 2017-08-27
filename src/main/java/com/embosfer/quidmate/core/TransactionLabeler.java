@@ -7,8 +7,7 @@ import com.embosfer.quidmate.db.DbConnection;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static java.util.Collections.emptyList;
+import java.util.Optional;
 
 /**
  * Created by embosfer on 31/07/2017.
@@ -24,30 +23,24 @@ public class TransactionLabeler {
 
     public List<LabeledTransaction> label(List<Transaction> transactions) {
         if (labels == null) {
-            labels = dbConnection.getAllLabels(); //TODO: maybe a Set instead...
+            labels = dbConnection.getAllLabels(); // condition: this returns only labels with patterns
         }
 
         List<LabeledTransaction> labeledTransactions = new ArrayList<>(transactions.size());
         for (Transaction transaction : transactions) {
-            List<Label> matchedLabels = getLabelsThatMatchedFor(transaction);
-            labeledTransactions.add(LabeledTransaction.of(transaction, matchedLabels));
+            Optional<Label> leafLabel = getLabelThatMatchedFor(transaction);
+            labeledTransactions.add(LabeledTransaction.of(transaction, leafLabel));
         }
 
         return labeledTransactions;
     }
 
-    private List<Label> getLabelsThatMatchedFor(Transaction transaction) {
-        List<Label> matchedLabels = new ArrayList<>();
+    private Optional<Label> getLabelThatMatchedFor(Transaction transaction) {
         for (Label label : labels) {
-            label.patternToFind.ifPresent(pattern -> {
-                if (pattern.matcher(transaction.description.value).find()) {
-                    matchedLabels.add(label);
-                    label.parentLabel.ifPresent(parentLabel -> matchedLabels.add(parentLabel));
-                }
-            });
-
+            if (label.patternToFind.get().matcher(transaction.description.value).find()) {
+                return Optional.of(label);
+            }
         }
-        return (matchedLabels.size() > 0 ? matchedLabels : emptyList());
+        return Optional.empty();
     }
-
 }

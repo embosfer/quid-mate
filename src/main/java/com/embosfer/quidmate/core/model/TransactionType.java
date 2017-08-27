@@ -21,7 +21,7 @@ public enum TransactionType {
         return TransactionType.valueOf(csvValue.replaceAll("\\s+", "_").replaceAll("-", ""));
     }
 
-    public static TransactionType fromDB(int dbID) { // TODO get it from the id instead
+    public static TransactionType fromDB(int dbID) {
         for (TransactionType tt : values()) {
             if (tt.id == dbID) return tt;
         }

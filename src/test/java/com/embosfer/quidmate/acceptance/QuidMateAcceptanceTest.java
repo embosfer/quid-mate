@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.testfx.framework.junit.ApplicationTest;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import static com.embosfer.quidmate.core.model.TransactionType.CARD_PAYMENT;
 import static com.embosfer.quidmate.core.model.TransactionType.DD;
@@ -34,9 +35,8 @@ public class QuidMateAcceptanceTest extends ApplicationTest {
         Label billsParentLabel = Label.of(1, Description.of("Bills"),null, null);
         Label electricityLabel = Label.of(2, Description.of("Electricity"), billsParentLabel, "EDF");
         Label gasLabel = Label.of(3, Description.of("Gas"), billsParentLabel,"E\\.ON");
-        db.has(billsParentLabel);
-        db.has(electricityLabel);
-        db.has(gasLabel);
+        db.hasLoaded(electricityLabel);
+        db.hasLoaded(gasLabel);
 
         Transaction electricityTransaction =
                 Transaction.of(LocalDate.of(2017, 5, 28), DD, Description.of("DIRECT DEBIT PAYMENT TO EDF ENERGY REF"), DebitCredit.of(-50.00), Balance.of(950.00));
@@ -48,12 +48,11 @@ public class QuidMateAcceptanceTest extends ApplicationTest {
                 .withTransactions(electricityTransaction, gasTransaction));
 
         db.contains(asList(
-                LabeledTransaction.of(electricityTransaction, asList(electricityLabel, billsParentLabel)),
-                LabeledTransaction.of(gasTransaction, asList(gasLabel,
-                        billsParentLabel))));
+                LabeledTransaction.of(electricityTransaction, Optional.of(electricityLabel)),
+                LabeledTransaction.of(gasTransaction, Optional.of(gasLabel))));
 
-        gui.showsLabeledTransaction(electricityTransaction, "Electricity Bills");
-        gui.showsLabeledTransaction(gasTransaction, "Gas Bills");
+        gui.showsLabeledTransaction(electricityTransaction, "Electricity");
+        gui.showsLabeledTransaction(gasTransaction, "Gas");
         gui.showsTransactionsWereLoaded(2);
     }
 
@@ -63,9 +62,8 @@ public class QuidMateAcceptanceTest extends ApplicationTest {
         Label billsParentLabel = Label.of(1, Description.of("Bills"),null, null);
         Label electricityLabel = Label.of(2, Description.of("Electricity"), billsParentLabel, "EDF");
         Label gasLabel = Label.of(3, Description.of("Gas"), billsParentLabel,"E\\.ON");
-        db.has(billsParentLabel);
-        db.has(electricityLabel);
-        db.has(gasLabel);
+        db.hasLoaded(electricityLabel);
+        db.hasLoaded(gasLabel);
 
         gui.goesToLabelTab();
         gui.showsLabel(billsParentLabel);

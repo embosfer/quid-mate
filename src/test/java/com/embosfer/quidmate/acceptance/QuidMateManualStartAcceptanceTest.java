@@ -33,8 +33,8 @@ public class QuidMateManualStartAcceptanceTest extends ApplicationTest {
         transaction1 = Transaction.of(now, DD, Description.of("Desc1"), DebitCredit.of(-50.00), Balance.of(950.00));
         transaction2 = Transaction.of(now, INTEREST, Description.of("Desc2"), DebitCredit.of(20.00), Balance.of(1000));
 
-        db.has(transaction1, "label1", "label2");
-        db.has(transaction2);
+        db.hasLoaded(transaction1, "label1");
+        db.hasLoaded(transaction2, null);
     }
 
     @Override
@@ -44,7 +44,7 @@ public class QuidMateManualStartAcceptanceTest extends ApplicationTest {
 
     @Test
     public void reloadsTransactionsUponStart() {
-        gui.showsLabeledTransaction(transaction1, "label1 label2");
+        gui.showsLabeledTransaction(transaction1, "label1");
         gui.showsLabeledTransaction(transaction2, "");
     }
 

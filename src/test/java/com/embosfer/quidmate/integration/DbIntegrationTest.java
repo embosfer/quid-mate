@@ -79,26 +79,31 @@ public class DbIntegrationTest {
 
     @Test
     public void canRetrieveLastTransactions() {
-        Label labelT1 = Label.of(1001, Description.of("label1"), null, "w1");
-        Label labelT3 = Label.of(1003, Description.of("label3"), null, "w3");
-        dbConnection.has(labelT1, labelT3);
+        Label labelWithNoChildren = Label.of(1001, Description.of("label1"), null, "w1");
+        Label parentLabel = Label.of(1002, Description.of("label2"), null, new String[]{});
+        Label leafLabel = Label.of(1003, Description.of("label3"), parentLabel, "w3");
+        dbConnection.has(labelWithNoChildren, parentLabel, leafLabel);
 
         LocalDate now = now();
         Transaction transaction1 = Transaction.of(now, CARD_PAYMENT, Description.of("w1"), DebitCredit.of(-1), Balance.of(1));
-        LabeledTransaction labTransaction1 = LabeledTransaction.of(transaction1, Optional.of(labelT1));
+        LabeledTransaction labTransaction1 = LabeledTransaction.of(transaction1, Optional.of(labelWithNoChildren));
 
         Transaction transaction2 = Transaction.of(now.minusDays(1), PAYMENTS, Description.of("not_labeled"), DebitCredit.of(2), Balance.of(3));
         LabeledTransaction labTransaction2 = LabeledTransaction.of(transaction2, Optional.empty());
 
         Transaction transaction3 = Transaction.of(now.minusDays(2), FAST_PAYMENT, Description.of("w3"), DebitCredit.of(3), Balance.of(6));
-        LabeledTransaction labTransaction3 = LabeledTransaction.of(transaction3, Optional.of(labelT3));
+        LabeledTransaction labTransaction3 = LabeledTransaction.of(transaction3, Optional.of(leafLabel));
 
-        dbConnection.store(asList(labTransaction1, labTransaction2, labTransaction3));
+        Transaction transactionThatWillBeFiltered = Transaction.of(now.minusDays(3), FAST_PAYMENT, Description.of("Filtered transactino"), DebitCredit.of(4), Balance.of(12));
+        LabeledTransaction labTransactionThatWillBeFiltered = LabeledTransaction.of(transactionThatWillBeFiltered, Optional.empty());
 
-        List<LabeledTransaction> lastTransactions = dbConnection.retrieveLastTransactions(2);
-        assertThat(lastTransactions.size(), equalTo(2));
+        dbConnection.store(asList(labTransaction1, labTransaction2, labTransaction3, labTransactionThatWillBeFiltered));
+
+        List<LabeledTransaction> lastTransactions = dbConnection.retrieveLastTransactions(3);
+        assertThat(lastTransactions.size(), equalTo(3));
         assertThat(lastTransactions.get(0), equalTo(labTransaction1));
         assertThat(lastTransactions.get(1), equalTo(labTransaction2));
+        assertThat(lastTransactions.get(2), equalTo(labTransaction3));
     }
 
     @Ignore

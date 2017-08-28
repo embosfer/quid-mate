@@ -2,6 +2,7 @@ package com.embosfer.quidmate.core.parser;
 
 import com.embosfer.quidmate.core.exceptions.UnknownFileFormatException;
 import com.embosfer.quidmate.core.model.*;
+import com.embosfer.quidmate.db.DbConnection;
 import com.embosfer.quidmate.support.MidataSupport.MidataFile;
 import org.junit.Rule;
 import org.junit.Test;
@@ -18,13 +19,15 @@ import static java.util.stream.Collectors.toList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
 
 /**
  * Created by embosfer on 26/07/2017.
  */
 public class MidataParserTest {
 
-    MidataParser parser = new MidataParser();
+    DbConnection dbConnection = mock(DbConnection.class);
+    MidataParser parser = new MidataParser(dbConnection);
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();

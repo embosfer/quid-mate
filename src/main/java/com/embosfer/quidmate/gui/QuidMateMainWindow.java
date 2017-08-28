@@ -24,7 +24,7 @@ public class QuidMateMainWindow extends Application {
         dbConnection.open();
 
         TransactionsTab transactionsTab = new TransactionsTab(new PieChartDataCreator(), new TransactionsTable(),
-                new MidataFileProvider(primaryStage), new MidataParser(),
+                new MidataFileProvider(primaryStage), new MidataParser(dbConnection),
                 new TransactionLabeler(dbConnection), dbConnection);
         LabelsTab labelsTab = new LabelsTab(dbConnection);
 

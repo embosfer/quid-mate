@@ -2,6 +2,7 @@ package com.embosfer.quidmate.core.parser;
 
 import com.embosfer.quidmate.core.exceptions.UnknownFileFormatException;
 import com.embosfer.quidmate.core.model.*;
+import com.embosfer.quidmate.db.DbConnection;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,6 +14,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static java.lang.Integer.parseInt;
 import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.util.stream.Collectors.toList;
 
@@ -23,14 +25,32 @@ public class MidataParser {
 
     private static final DateTimeFormatter DATE_TIME_FORMATTER = ofPattern("dd/MM/yyyy");
     private static final Charset CHARSET = Charset.forName("ISO-8859-1");
+    private final DbConnection dbConnection;
+
+    public MidataParser(DbConnection dbConnection) {
+        this.dbConnection = dbConnection;
+    }
+
+    private LocalDate getLastProcessedTransactionDate(DbConnection dbConnection) {
+        LocalDate lastProcessedTransactionDate;List<LabeledTransaction> lastProcessedTransaction = dbConnection.retrieveLastTransactions(1);
+        if (lastProcessedTransaction.size() > 0) {
+            lastProcessedTransactionDate = lastProcessedTransaction.get(0).transaction.date;
+        } else {
+            lastProcessedTransactionDate = null;
+        }
+        return lastProcessedTransactionDate;
+    }
 
     public List<Transaction> parse(File midataFile) throws UnknownFileFormatException {
         if (midataFile.length() == 0) throw new UnknownFileFormatException(midataFile.getName());
+
+        LocalDate lastProcessedTransactionDate = getLastProcessedTransactionDate(dbConnection);
 
         try (Stream<String> lines = Files.lines(Paths.get(midataFile.getAbsolutePath()), CHARSET)) {
             return lines
                     .skip(1) // skip header
                     .filter(line -> !line.isEmpty() && !line.startsWith("Arranged overdraft"))
+                    .filter(line -> lastProcessedTransactionDate == null ? true : dateFrom(line).isAfter(lastProcessedTransactionDate))
                     .map(line -> {
                         String[] fields = line.split(";");
                         int i = 0;
@@ -47,4 +67,12 @@ public class MidataParser {
             throw new UnknownFileFormatException(midataFile.getName());
         }
     }
+
+    private LocalDate dateFrom(String line) {
+        LocalDate localDate = LocalDate.of(parseInt(line.substring(6, 10)), parseInt(line.substring(3, 5)), parseInt(line.substring(0, 2)));
+        return localDate;
+
+    }
+
+
 }

@@ -38,7 +38,7 @@ public class QuidMateRunner extends ApplicationTest {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        TransactionsTab transactionsTab = new TransactionsTab(new PieChartDataCreator(), new TransactionsTable(), midataFileProvider, new MidataParser(), new TransactionLabeler(db), db);
+        TransactionsTab transactionsTab = new TransactionsTab(new PieChartDataCreator(), new TransactionsTable(), midataFileProvider, new MidataParser(db), new TransactionLabeler(db), db);
         LabelsTab labelsTab = new LabelsTab(db);
 
         primaryStage.setScene(new MainScene(new Group(), transactionsTab, labelsTab));

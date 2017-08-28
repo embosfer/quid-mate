@@ -72,10 +72,31 @@ public class QuidMateAcceptanceTest extends ApplicationTest {
     // TODO: test with a non expected file pops an error message
 
     // TODO: probably better to have a unit test for this
-    @Ignore
     @Test
-    public void mergesMidataTransactionsCorrectlyWithoutDuplicatingAnyOfThem() {
+    public void mergesMidataTransactionsCorrectlyWithoutDuplicatingAnyOfThem() throws Exception {
+        Label justALabel = Label.of(1, Description.of("Label"),null, "Blah");
+        db.hasLoaded(justALabel);
 
+        Transaction existingTransaction1 =
+                Transaction.of(LocalDate.of(2017, 8, 27), DD, Description.of("Desc1"), DebitCredit.of(-1.00), Balance.of(1.00));
+        Transaction existingTransaction2 =
+                Transaction.of(LocalDate.of(2017, 8, 27), DD, Description.of("Desc2"), DebitCredit.of(-2.00), Balance.of(2.00));
+        db.hasLoaded(existingTransaction1, "Label");
+        db.hasLoaded(existingTransaction2, "Label");
+
+        Transaction newTransaction1 =
+                Transaction.of(LocalDate.of(2017, 8, 28), DD, Description.of("New Blah" +
+                        ""), DebitCredit.of(-30.00), Balance.of(-30.00));
+
+        gui.loadsMidataFile(file("test_transactions.csv")
+                .withHeader("Date;Type;Merchant/Description;Debit/Credit;Balance;")
+                .withTransactions(newTransaction1, existingTransaction1, existingTransaction2));
+
+        db.contains(asList(
+                LabeledTransaction.of(newTransaction1, Optional.of(justALabel))));
+
+        gui.showsLabeledTransaction(newTransaction1, "Label");
+        gui.showsTransactionsWereLoaded(1);
     }
 
     @Ignore

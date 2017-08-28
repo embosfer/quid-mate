@@ -15,12 +15,13 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import static com.embosfer.quidmate.jooq.quidmate.Tables.*;
 import static com.embosfer.quidmate.jooq.quidmate.tables.Transactiontype.TRANSACTIONTYPE;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static java.util.Collections.reverse;
-import static java.util.Collections.reverseOrder;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -94,16 +95,20 @@ public class DefaultDbConnection implements DbConnection {
     }
 
     @Override
-    public List<Label> getAllLabels() {
+    public List<Label> getAllLabels(Optional<Predicate<Label>> optionalFilter) {
         Result<Record> labelRecords = execute.select()
                 .from(TRANSACTIONLABEL)
                 .orderBy(TRANSACTIONLABEL.PARENT_ID.asc(), TRANSACTIONLABEL.ID.asc()) // this order guarantees that we can chain labels by parent properly
                 .fetch();
 
-        return buildLabelHierarchyFrom(labelRecords);
+        Stream<Label> labelStream = buildLabelHierarchyFrom(labelRecords);
+        return labelStream
+                .filter(optionalFilter.orElse(label -> true))
+//                .sorted(reverseOrder()) // TODO: check that this sort them by levels: the leaf labels first, which will contain the pointers to their parents...
+                .collect(toImmutableList());
     }
 
-    private List<Label> buildLabelHierarchyFrom(Result<Record> transactionLabelDbRecords) {
+    private Stream<Label> buildLabelHierarchyFrom(Result<Record> transactionLabelDbRecords) {
         Map<Integer, Label> labels = new HashMap<>();
         return transactionLabelDbRecords.stream() // TODO: not sure this bit still works, we store from leaf upwards, so the order might be broken here
                 .map(labelDbRecord -> {
@@ -117,10 +122,7 @@ public class DefaultDbConnection implements DbConnection {
                             labels.put(label.id, label); // TODO can I do this in a more functional way?
                             return label;
                         }
-                )
-                .filter(label -> label.patternToFind.isPresent())
-                .sorted(reverseOrder()) // TODO: check that this sort them by levels: the leaf labels first, which will contain the pointers to their parents...
-                .collect(toImmutableList());
+                );
     }
 
     @Override
@@ -159,11 +161,10 @@ public class DefaultDbConnection implements DbConnection {
                     .and(TRANSACTIONLABELLIST.LABEL_ID.eq(TRANSACTIONLABEL.ID))
                     .fetch();
 
-            List<Label> labelList = buildLabelHierarchyFrom(transactionLabelDbRecords);
-            if (labelList.size() > 1)
-                throw new IllegalStateException("A transaction cannot have more than 2 leaf labels!!! Got: " + labelList);
+            List<Label> labelList = buildLabelHierarchyFrom(transactionLabelDbRecords).collect(toImmutableList());
 
-            labeledTransactions.add(LabeledTransaction.of(transaction, Optional.of(labelList.get(0))));
+            Optional<Label> label = labelList.size() == 0 ? Optional.empty() : Optional.of(labelList.get(labelList.size() - 1));
+            labeledTransactions.add(LabeledTransaction.of(transaction, label));
         }
 
         return labeledTransactions;

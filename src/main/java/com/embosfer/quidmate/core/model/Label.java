@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 import static java.util.Collections.emptyList;
@@ -24,13 +25,17 @@ public class Label {
     private Label(int id, Description description, Label parentLabel, String... wordsToFind) {
         this.id = id;
         this.description = description;
-        this.wordsToFind = wordsToFind == null || wordsToFind.length == 0 ? emptyList() : ImmutableList.copyOf(wordsToFind);
-        this.patternToFind = Optional.ofNullable(wordsToFind == null ? null : Pattern.compile(this.wordsToFind.stream().collect(joining("|"))));
+        this.wordsToFind = wordsToFind == null || wordsToFind.length == 0 || (wordsToFind.length == 1 && wordsToFind[0].equals("")) ? emptyList() : ImmutableList.copyOf(wordsToFind);
+        this.patternToFind = Optional.ofNullable(this.wordsToFind.isEmpty() ? null : Pattern.compile(this.wordsToFind.stream().collect(joining("|"))));
         this.parentLabel = Optional.ofNullable(parentLabel);
     }
 
     public static Label of(int id, Description description, Label parentLabel, String... wordsToFind) {
         return new Label(id, description, parentLabel, wordsToFind);
+    }
+
+    public static Predicate<Label> withPattern() {
+        return label -> label.patternToFind.isPresent();
     }
 
     @Override

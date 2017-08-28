@@ -6,6 +6,8 @@ import com.embosfer.quidmate.core.model.TransactionType;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Predicate;
 
 /**
  * Created by embosfer on 27/07/2017.
@@ -20,7 +22,7 @@ public interface DbConnection {
 
     void store(Label label);
 
-    List<Label> getAllLabels();
+    List<Label> getAllLabels(Optional<Predicate<Label>> optionalFilter);
 
     List<TransactionType> getAllTransactionTypes();
 

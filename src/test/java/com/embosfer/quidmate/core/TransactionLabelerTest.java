@@ -40,7 +40,7 @@ public class TransactionLabelerTest {
 
         labeler.label(someTransactions);
 
-        verify(dbConnection, times(1)).getAllLabels();
+        verify(dbConnection, times(1)).getAllLabels(Optional.of(Label.withPattern()));
 
         labeler.label(someTransactions);
         labeler.label(someTransactions);
@@ -50,7 +50,8 @@ public class TransactionLabelerTest {
 
     @Test
     public void transactionThatDoesntMatchWithAnyLabelGetsAnEmptyLabelList() {
-        when(dbConnection.getAllLabels()).thenReturn(asList(Label.of(1, null, null, "THIS_WONT_MATCH")));
+        when(dbConnection.getAllLabels(Optional.of(Label.withPattern())))
+                .thenReturn(asList(Label.of(1, null, null, "THIS_WONT_MATCH")));
 
         List<LabeledTransaction> labeledTransactions = labeler.label(asList(transactionToBeLabeled));
 
@@ -64,7 +65,8 @@ public class TransactionLabelerTest {
     @Test
     public void labelsCorrectlyAParentLabelContainingSeveralMatchingWords() {
         Label parentLabel = Label.of(1, Description.of("Parent label"), null, "WORD1", "WORD2");
-        when(dbConnection.getAllLabels()).thenReturn(asList(parentLabel));
+        when(dbConnection.getAllLabels(Optional.of(Label.withPattern())))
+                .thenReturn(asList(parentLabel));
 
         Transaction t1 = Transaction.of(null, null, Description.of("blah WORD1 blah"), null, null);
         Transaction t2 = Transaction.of(null, null, Description.of("blah WORD2 blah"), null, null);
@@ -80,7 +82,8 @@ public class TransactionLabelerTest {
     public void labelsCorrectlyAChildLabelContainingSeveralMatchingWords() {
         Label parentLabel = Label.of(1, Description.of("Parent label"), null, null);
         Label childLabel = Label.of(2, Description.of("Child label with multiple words to find"), parentLabel, "WORD1", "WORD2");
-        when(dbConnection.getAllLabels()).thenReturn(asList(childLabel));
+        when(dbConnection.getAllLabels(Optional.of(Label.withPattern())))
+                .thenReturn(asList(childLabel));
 
         Transaction t1 = Transaction.of(null, null, Description.of("blah WORD1 blah"), null, null);
         Transaction t2 = Transaction.of(null, null, Description.of("blah WORD2 blah"), null, null);
@@ -95,7 +98,8 @@ public class TransactionLabelerTest {
     @Test
     public void cashWithdrawalsHaveTheirOwnExclusiveLabel() {
         Label someLabel = Label.of(1, Description.of("Some label"), null, "WORD1");
-        when(dbConnection.getAllLabels()).thenReturn(asList(someLabel));
+        when(dbConnection.getAllLabels(Optional.of(Label.withPattern())))
+                .thenReturn(asList(someLabel));
 
         Transaction t1 = Transaction.of(null, CASH_WDL, Description.of("blah WORD1 blah"), null, null);
         List<LabeledTransaction> labeledTransactions = labeler.label(asList(t1));

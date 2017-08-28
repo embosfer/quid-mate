@@ -3,6 +3,8 @@ package com.embosfer.quidmate.gui;
 import com.embosfer.quidmate.db.DbConnection;
 import org.junit.Test;
 
+import java.util.Optional;
+
 import static org.mockito.Mockito.*;
 
 /**
@@ -15,11 +17,11 @@ public class LabelsTreeTableViewTest {
     @Test
     public void labelsGetLoadedFromDbLazilyWhenTheLabelTabIsClicked() {
         LabelsTreeTableView labelsTreeTableView = new LabelsTreeTableView(dbConnection);
-        verify(dbConnection, times(0)).getAllLabels();
+        verify(dbConnection, times(0)).getAllLabels(Optional.empty());
 
         labelsTreeTableView.onTabClicked();
 
-        verify(dbConnection, times(1)).getAllLabels();
+        verify(dbConnection, times(1)).getAllLabels(Optional.empty());
     }
 
     @Test
@@ -30,7 +32,7 @@ public class LabelsTreeTableViewTest {
         labelsTreeTableView.onTabClicked();
         labelsTreeTableView.onTabClicked();
 
-        verify(dbConnection, times(1)).getAllLabels();
+        verify(dbConnection, times(1)).getAllLabels(Optional.empty());
     }
 
 }

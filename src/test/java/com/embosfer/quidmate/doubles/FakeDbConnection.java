@@ -6,6 +6,7 @@ import com.embosfer.quidmate.db.DbConnection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import static java.lang.Thread.sleep;
 import static java.util.Collections.emptyList;
@@ -40,7 +41,7 @@ public class FakeDbConnection implements DbConnection {
     }
 
     @Override
-    public List<Label> getAllLabels() {
+    public List<Label> getAllLabels(Optional<Predicate<Label>> optionalFilter) {
         return labelsInDb;
     }
 

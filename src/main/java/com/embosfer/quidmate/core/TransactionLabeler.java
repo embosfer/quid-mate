@@ -23,7 +23,7 @@ public class TransactionLabeler {
 
     public List<LabeledTransaction> label(List<Transaction> transactions) {
         if (labels == null) {
-            labels = dbConnection.getAllLabels(); // condition: this returns only labels with patterns
+            labels = dbConnection.getAllLabels(Optional.of(Label.withPattern()));
         }
 
         List<LabeledTransaction> labeledTransactions = new ArrayList<>(transactions.size());

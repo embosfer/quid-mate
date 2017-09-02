@@ -31,20 +31,19 @@ public class MidataParser {
         this.dbConnection = dbConnection;
     }
 
-    private LocalDate getLastProcessedTransactionDate(DbConnection dbConnection) {
-        LocalDate lastProcessedTransactionDate;List<LabeledTransaction> lastProcessedTransaction = dbConnection.retrieveLastTransactions(1);
+    private LocalDate getLastProcessedTransactionDate() {
+        List<LabeledTransaction> lastProcessedTransaction = dbConnection.retrieveLastTransactions(1);
         if (lastProcessedTransaction.size() > 0) {
-            lastProcessedTransactionDate = lastProcessedTransaction.get(0).transaction.date;
+            return lastProcessedTransaction.get(0).transaction.date;
         } else {
-            lastProcessedTransactionDate = null;
+            return null;
         }
-        return lastProcessedTransactionDate;
     }
 
     public List<Transaction> parse(File midataFile) throws UnknownFileFormatException {
         if (midataFile.length() == 0) throw new UnknownFileFormatException(midataFile.getName());
 
-        LocalDate lastProcessedTransactionDate = getLastProcessedTransactionDate(dbConnection);
+        LocalDate lastProcessedTransactionDate = getLastProcessedTransactionDate();
 
         try (Stream<String> lines = Files.lines(Paths.get(midataFile.getAbsolutePath()), CHARSET)) {
             return lines
@@ -69,10 +68,7 @@ public class MidataParser {
     }
 
     private LocalDate dateFrom(String line) {
-        LocalDate localDate = LocalDate.of(parseInt(line.substring(6, 10)), parseInt(line.substring(3, 5)), parseInt(line.substring(0, 2)));
-        return localDate;
-
+        return LocalDate.of(parseInt(line.substring(6, 10)), parseInt(line.substring(3, 5)), parseInt(line.substring(0, 2)));
     }
-
 
 }

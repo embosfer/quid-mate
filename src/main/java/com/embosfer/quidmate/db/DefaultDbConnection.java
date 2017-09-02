@@ -31,7 +31,7 @@ public class DefaultDbConnection implements DbConnection {
 
     private static final Logger log = LoggerFactory.getLogger(DefaultDbConnection.class);
 
-    private final LabelPatternTranslator labelPatternTranslator;
+    private final LabelPatternTranslator labelPatternTranslator; // TODO not sure about this being useful anymore
 
     private final DbConfig dbConfig;
     private Connection connection;
@@ -87,7 +87,7 @@ public class DefaultDbConnection implements DbConnection {
     public void store(Label label) {
         int noLabelsStored = this.execute.insertInto(TRANSACTIONLABEL)
                 .set(TRANSACTIONLABEL.ID, label.id)
-                .set(TRANSACTIONLABEL.PARENT_ID, label.parentLabel.map(parentLab -> parentLab.id).orElse(null)) // TODO: refactor this to be an Optional
+                .set(TRANSACTIONLABEL.PARENT_ID, label.parentLabel.map(parentLab -> parentLab.id).orElse(null))
                 .set(TRANSACTIONLABEL.NAME, label.description.value)
                 .set(TRANSACTIONLABEL.PATTERN, label.patternToFind.map(lab -> lab.toString()).orElse(null))
                 .execute();

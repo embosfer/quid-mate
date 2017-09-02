@@ -16,6 +16,7 @@ import static com.embosfer.quidmate.core.model.TransactionType.CARD_PAYMENT;
 import static com.embosfer.quidmate.core.model.TransactionType.DD;
 import static com.embosfer.quidmate.support.MidataSupport.file;
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 
 /**
  * Created by embosfer on 21/05/2017.
@@ -71,10 +72,9 @@ public class QuidMateAcceptanceTest extends ApplicationTest {
 
     // TODO: test with a non expected file pops an error message
 
-    // TODO: probably better to have a unit test for this
     @Test
     public void mergesMidataTransactionsCorrectlyWithoutDuplicatingAnyOfThem() throws Exception {
-        Label justALabel = Label.of(1, Description.of("Label"),null, "Blah");
+        Label justALabel = Label.of(1, Description.of("Label"),null, "word");
         db.hasLoaded(justALabel);
 
         Transaction existingTransaction1 =
@@ -85,8 +85,7 @@ public class QuidMateAcceptanceTest extends ApplicationTest {
         db.hasLoaded(existingTransaction2, "Label");
 
         Transaction newTransaction1 =
-                Transaction.of(LocalDate.of(2017, 8, 28), DD, Description.of("New Blah" +
-                        ""), DebitCredit.of(-30.00), Balance.of(-30.00));
+                Transaction.of(LocalDate.of(2017, 8, 28), DD, Description.of("word"), DebitCredit.of(-30.00), Balance.of(-30.00));
 
         gui.loadsMidataFile(file("test_transactions.csv")
                 .withHeader("Date;Type;Merchant/Description;Debit/Credit;Balance;")
@@ -97,6 +96,22 @@ public class QuidMateAcceptanceTest extends ApplicationTest {
 
         gui.showsLabeledTransaction(newTransaction1, "Label");
         gui.showsTransactionsWereLoaded(1);
+    }
+
+    @Ignore("Check TestFX api for checking Alert dialogs but I cannot see anything obvious...")
+    @Test
+    public void detectsThatNoTransactionWasAddedIfItsAlreadyBeenProcessed() throws Exception {
+        Transaction alreadyProcessedTransaction =
+                Transaction.of(LocalDate.of(2017, 8, 27), DD, Description.of("Desc1"), DebitCredit.of(-1.00), Balance.of(1.00));
+        db.hasLoaded(alreadyProcessedTransaction, "Label");
+
+        gui.loadsMidataFile(file("test_transactions.csv")
+                .withHeader("Date;Type;Merchant/Description;Debit/Credit;Balance;")
+                .withTransactions(alreadyProcessedTransaction));
+
+        db.contains(emptyList());
+
+        gui.showsPopupMessage("0 transactions loaded");
     }
 
     @Ignore

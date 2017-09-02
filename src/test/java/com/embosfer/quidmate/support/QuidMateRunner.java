@@ -59,6 +59,11 @@ public class QuidMateRunner extends ApplicationTest {
         verifyThat("#lblNoTransactionsLoaded", LabeledMatchers.hasText(noTransactions + " transactions were loaded."));
     }
 
+    public void showsPopupMessage(String message) {
+//        verifyThat(fromAll()., typeSafeMatcher(Dialog.class, "", node -> node.getTitle().equals("")));
+    }
+
+
     public void showsLabel(Label label) {
         verifyThat("#loadedLabels", containsRow(label.description, label.wordsToFind, label.parentLabel.map(lab -> lab.description).orElse(null)));
     }

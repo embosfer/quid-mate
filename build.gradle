@@ -16,17 +16,14 @@ apply from: 'jooq.gradle'
 repositories {
     mavenCentral()
     jcenter()
-    maven {
-        url 'http://central.maven.org/maven2'
-    }
 }
 
 dependencies {
     compile 'org.slf4j:slf4j-api:1.7.13'
-    compile 'org.jooq:jooq:3.9.2'
-    compile 'org.jooq:jooq-meta:3.9.2'
-    compile 'org.jooq:jooq-codegen:3.9.2'
-    compile 'com.google.guava:guava:21.0'
+    compile 'org.jooq:jooq:3.9.5'
+    compile 'org.jooq:jooq-meta:3.9.5'
+    compile 'org.jooq:jooq-codegen:3.9.5'
+    compile 'com.google.guava:guava:23.0'
 
     jooqRuntime 'mysql:mysql-connector-java:6.0.6'
     runtime 'mysql:mysql-connector-java:6.0.6'

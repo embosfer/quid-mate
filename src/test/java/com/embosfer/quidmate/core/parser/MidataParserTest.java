@@ -109,4 +109,21 @@ public class MidataParserTest {
         assertThat(tran2.balance.value, is(0.0));
     }
 
+    @Test
+    public void ignoresArrangedOverdraftLimit() throws UnknownFileFormatException {
+
+        Transaction[] transactions = {
+                Transaction.of(now(), DD, Description.of("A"), DebitCredit.of(1), Balance.of(0))
+        };
+
+        MidataFile midataFile = file(midataFilename)
+                .withHeader("Date;Type;Merchant/Description;Debit/Credit;Balance;")
+                .withTransactions(transactions)
+                .withArrangedOverdraftLimitInfo();
+
+        List<Transaction> actualTransactions = parser.parse(midataFile.outputFile);
+
+        assertThat(actualTransactions.size(), is(1));
+    }
+
 }

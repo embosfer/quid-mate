@@ -12,6 +12,7 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import static java.lang.Integer.parseInt;
@@ -48,8 +49,8 @@ public class MidataParser {
         try (Stream<String> lines = Files.lines(Paths.get(midataFile.getAbsolutePath()), CHARSET)) {
             return lines
                     .skip(1) // skip header
-                    .filter(line -> !line.isEmpty() && !line.startsWith("Arranged overdraft"))
-                    .filter(line -> lastProcessedTransactionDate == null ? true : dateFrom(line).isAfter(lastProcessedTransactionDate))
+                    .filter(processableLines())
+                    .filter(notYetProcessedTransaction(lastProcessedTransactionDate))
                     .map(line -> {
                         String[] fields = line.split(";");
                         int i = 0;
@@ -65,6 +66,14 @@ public class MidataParser {
         } catch (IOException e) {
             throw new UnknownFileFormatException(midataFile.getName());
         }
+    }
+
+    private Predicate<String> processableLines() {
+        return line -> !line.isEmpty() && !line.startsWith("Arranged overdraft");
+    }
+
+    private Predicate<String> notYetProcessedTransaction(LocalDate lastProcessedTransactionDate) {
+        return line -> lastProcessedTransactionDate == null || dateFrom(line).isAfter(lastProcessedTransactionDate);
     }
 
     private LocalDate dateFrom(String line) {

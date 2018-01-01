@@ -15,10 +15,11 @@ public class MidataSupport {
     public static class MidataFile {
 
         // TODO review this global access later (handy for less verbose tests)
-        public String header;
-        public final String name;
-        public Transaction[] transactions;
+        String header;
+        final String name;
+        Transaction[] transactions;
         public final File outputFile;
+        boolean withArrangedOverdraftLimitInfo;
 
         MidataFile(String name) {
             this.name = name;
@@ -59,6 +60,7 @@ public class MidataSupport {
         }
 
         private void writeTrailer(BufferedWriter writer) throws IOException {
+            if (!withArrangedOverdraftLimitInfo) return;
             writer.newLine();
             writer.append("Arranged overdraft limit;").append("22/05/2017").append(";").append("+£").append("500.00").append(";");
         }
@@ -72,6 +74,11 @@ public class MidataSupport {
                         .append(transaction.balance.toString()).append(";");
                 writer.newLine();
             }
+        }
+
+        public MidataFile withArrangedOverdraftLimitInfo() {
+            this.withArrangedOverdraftLimitInfo = true;
+            return this;
         }
     }
 

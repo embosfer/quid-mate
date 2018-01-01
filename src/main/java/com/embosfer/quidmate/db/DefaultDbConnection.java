@@ -148,7 +148,7 @@ public class DefaultDbConnection implements DbConnection {
 
         for (Record tranDbRecord : transactionRecords) {
 
-            Transaction transaction = Transaction.of(tranDbRecord.get(TRANSACTION.DATE).plusDays(1), // TODO LocalDate gets loaded from DB (jooq) with a day less!
+            Transaction transaction = Transaction.of(tranDbRecord.get(TRANSACTION.DATE),
                     TransactionType.fromDB(tranDbRecord.get(TRANSACTION.TYPE_ID)),
                     Description.of(tranDbRecord.get(TRANSACTION.DESCRIPTION)),
                     DebitCredit.of(tranDbRecord.get(TRANSACTION.DEBIT_CREDIT)),

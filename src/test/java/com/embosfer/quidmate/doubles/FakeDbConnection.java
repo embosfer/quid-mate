@@ -3,6 +3,7 @@ package com.embosfer.quidmate.doubles;
 import com.embosfer.quidmate.core.model.*;
 import com.embosfer.quidmate.db.DbConnection;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -54,6 +55,11 @@ public class FakeDbConnection implements DbConnection {
     @Override
     public List<LabeledTransaction> retrieveLastTransactions(int noTransactions) {
         return loadedTransactions;
+    }
+
+    @Override
+    public List<Transaction> getTransactionsMatching(String label, LocalDate fromDate, LocalDate toDate) {
+        throw new RuntimeException("Forgot to implement me");
     }
 
     public void contains(List<LabeledTransaction> transactions) throws InterruptedException {

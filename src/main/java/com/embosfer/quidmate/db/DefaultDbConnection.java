@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -148,11 +149,7 @@ public class DefaultDbConnection implements DbConnection {
 
         for (Record tranDbRecord : transactionRecords) {
 
-            Transaction transaction = Transaction.of(tranDbRecord.get(TRANSACTION.DATE),
-                    TransactionType.fromDB(tranDbRecord.get(TRANSACTION.TYPE_ID)),
-                    Description.of(tranDbRecord.get(TRANSACTION.DESCRIPTION)),
-                    DebitCredit.of(tranDbRecord.get(TRANSACTION.DEBIT_CREDIT)),
-                    Balance.of(tranDbRecord.get(TRANSACTION.BALANCE)));
+            Transaction transaction = transactionFrom(tranDbRecord);
 
             Result<Record> transactionLabelDbRecords = execute // TODO: I can probably create a cache of labels so I only select the ids, as opposed to everything...
                     .select(TRANSACTIONLABEL.fields())
@@ -168,5 +165,32 @@ public class DefaultDbConnection implements DbConnection {
         }
 
         return labeledTransactions;
+    }
+
+    private Transaction transactionFrom(Record dbRecord) {
+        return Transaction.of(dbRecord.get(TRANSACTION.DATE),
+                TransactionType.fromDB(dbRecord.get(TRANSACTION.TYPE_ID)),
+                Description.of(dbRecord.get(TRANSACTION.DESCRIPTION)),
+                DebitCredit.of(dbRecord.get(TRANSACTION.DEBIT_CREDIT)),
+                Balance.of(dbRecord.get(TRANSACTION.BALANCE)));
+    }
+
+    @Override
+    public List<Transaction> getTransactionsMatching(String label, LocalDate fromDate, LocalDate toDate) {
+
+        Result<Record> records = execute.select()
+                .from(TRANSACTION, TRANSACTIONLABELLIST, TRANSACTIONLABEL)
+                .where(TRANSACTION.ID.eq(TRANSACTIONLABELLIST.TRANSACTION_ID))
+                .and(TRANSACTIONLABELLIST.LABEL_ID.eq(TRANSACTIONLABEL.ID))
+                .and(TRANSACTIONLABEL.NAME.eq(label))
+                .and(TRANSACTION.DATE.between(fromDate, toDate))
+                .fetch();
+
+        List<Transaction> transactions = new ArrayList<>();
+        for (Record tranDbRecord : records) {
+            transactions.add(transactionFrom(tranDbRecord));
+        }
+
+        return transactions;
     }
 }

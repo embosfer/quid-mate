@@ -2,9 +2,11 @@ package com.embosfer.quidmate.db;
 
 import com.embosfer.quidmate.core.model.Label;
 import com.embosfer.quidmate.core.model.LabeledTransaction;
+import com.embosfer.quidmate.core.model.Transaction;
 import com.embosfer.quidmate.core.model.TransactionType;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -27,4 +29,6 @@ public interface DbConnection {
     List<TransactionType> getAllTransactionTypes();
 
     List<LabeledTransaction> retrieveLastTransactions(int noTransactions);
+
+    List<Transaction> getTransactionsMatching(String label, LocalDate fromDate, LocalDate toDate);
 }

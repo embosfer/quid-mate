@@ -7,6 +7,9 @@ import com.embosfer.quidmate.core.TransactionLabeler;
 import com.embosfer.quidmate.core.parser.MidataParser;
 import com.embosfer.quidmate.db.DefaultDbConnection;
 import com.embosfer.quidmate.db.translator.LabelPatternTranslator;
+import com.embosfer.quidmate.gui.reports.AllLabelsComboBox;
+import com.embosfer.quidmate.gui.reports.PeriodTrendComboBox;
+import com.embosfer.quidmate.gui.reports.ReportsTab;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.stage.Stage;
@@ -27,8 +30,9 @@ public class QuidMateMainWindow extends Application {
                 new MidataFileProvider(primaryStage), new MidataParser(dbConnection),
                 new TransactionLabeler(dbConnection), dbConnection);
         LabelsTab labelsTab = new LabelsTab(dbConnection);
+        ReportsTab reportsTab = new ReportsTab(dbConnection, new AllLabelsComboBox(dbConnection), new PeriodTrendComboBox());
 
-        primaryStage.setScene(new MainScene(new Group(), transactionsTab, labelsTab));
+        primaryStage.setScene(new MainScene(new Group(), transactionsTab, labelsTab, reportsTab));
         primaryStage.show();
     }
 

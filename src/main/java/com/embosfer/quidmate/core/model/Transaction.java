@@ -49,4 +49,7 @@ public class Transaction {
         return "[" + date + ", " + type + ", Description: " + description + ", Debit/Credit: " + debitCredit + ", Balance: " + balance + "]";
     }
 
+    public double getDebitCreditAsDouble() {
+        return debitCredit.value;
+    }
 }

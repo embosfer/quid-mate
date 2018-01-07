@@ -1,4 +1,4 @@
-package com.embosfer.quidmate.gui;
+package com.embosfer.quidmate.gui.transactions;
 
 import com.embosfer.quidmate.core.model.*;
 import javafx.collections.FXCollections;

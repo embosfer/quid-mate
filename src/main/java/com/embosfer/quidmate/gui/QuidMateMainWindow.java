@@ -10,6 +10,8 @@ import com.embosfer.quidmate.db.translator.LabelPatternTranslator;
 import com.embosfer.quidmate.gui.reports.AllLabelsComboBox;
 import com.embosfer.quidmate.gui.reports.PeriodTrendComboBox;
 import com.embosfer.quidmate.gui.reports.ReportsTab;
+import com.embosfer.quidmate.gui.transactions.TransactionsTab;
+import com.embosfer.quidmate.gui.transactions.TransactionsTable;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.stage.Stage;
